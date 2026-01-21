@@ -61,13 +61,10 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     () => data.emergencyContactName.trim().length >= 3,
     [data.emergencyContactName],
   );
-  const isValidEmergencyContactWhatsapp = useMemo(
-    () =>
-      /^\(\d{2}\) \d{5}-\d{4}$|^\(\d{2}\) \d{4}-\d{4}$/.test(
-        data.emergencyContactWhatsapp,
-      ),
-    [data.emergencyContactWhatsapp],
-  );
+  const isValidEmergencyContactWhatsapp = useMemo(() => {
+    const digits = data.emergencyContactWhatsapp.replace(/\D/g, "");
+    return digits.length === 10 || digits.length === 11;
+  }, [data.emergencyContactWhatsapp]);
 
   return (
     <OnboardingContext.Provider

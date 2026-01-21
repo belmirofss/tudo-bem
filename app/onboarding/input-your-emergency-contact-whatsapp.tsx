@@ -2,17 +2,14 @@ import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { ThemedTextInput } from "../../components/ThemedTextInput";
+import { ThemedPhoneInput } from "../../components/ThemedPhoneInput";
 import { ThemeView } from "../../components/ThemeView";
 import { useOnboarding } from "./context/OnboardingContext";
 
 export default function InputYourEmergencyContactWhatsapp() {
   const router = useRouter();
-  const {
-    updateEmergencyContactWhatsapp,
-    data,
-    isValidEmergencyContactWhatsapp,
-  } = useOnboarding();
+  const { updateEmergencyContactWhatsapp, isValidEmergencyContactWhatsapp } =
+    useOnboarding();
 
   return (
     <ThemeView>
@@ -21,12 +18,7 @@ export default function InputYourEmergencyContactWhatsapp() {
           <ThemedText variant="title">
             Qual o número de WhatsApp do seu contato de emergência?
           </ThemedText>
-          <ThemedTextInput
-            value={data.emergencyContactWhatsapp}
-            onChangeText={updateEmergencyContactWhatsapp}
-            placeholder="Digite o número com DDD"
-            keyboardType="phone-pad"
-          />
+          <ThemedPhoneInput onChangeText={updateEmergencyContactWhatsapp} />
         </View>
 
         <ThemedButton
