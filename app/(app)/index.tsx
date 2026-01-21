@@ -1,27 +1,27 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemedButton } from "../../components/ThemedButton";
-import { Colors } from "../../constants";
+import { ThemedText } from "../../components/ThemedText";
 
 export default function HomeScreen() {
   return (
     <ThemeView>
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>Tudo bem?</Text>
+          <ThemedText variant="title">Tudo bem?</ThemedText>
         </View>
 
         <View style={styles.buttonContainer}>
           <ThemedButton title="Sim, estou bem 👍" variant="good" size="large" />
           <ThemedButton title="Não estou bem" variant="bad" />
         </View>
-        <Text style={styles.secondaryText}>
+        <ThemedText variant="secondaryBody">
           Se você não responder em 03:00, uma mensagem será enviada para seu
           contato de emergência.
-        </Text>
-        <Text style={styles.secondaryText}>
+        </ThemedText>
+        <ThemedText variant="secondaryBody">
           Última resposta: 21/01/2025 14:30
-        </Text>
+        </ThemedText>
       </View>
     </ThemeView>
   );
@@ -33,15 +33,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-end",
     gap: 12,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: "bold",
-  },
-  secondaryText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.text.secondary,
   },
   buttonContainer: {
     flexDirection: "column",

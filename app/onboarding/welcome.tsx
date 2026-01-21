@@ -1,6 +1,7 @@
 import { ThemedButton } from "@/components/ThemedButton";
+import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 
 export default function Welcome() {
@@ -10,15 +11,15 @@ export default function Welcome() {
     <ThemeView>
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Tudo bem?</Text>
-          <Text style={styles.secondaryText}>
+          <ThemedText variant="title">Tudo bem?</ThemedText>
+          <ThemedText variant="body">
             Às vezes, tudo o que a gente precisa é avisar que está bem.
-          </Text>
-          <Text style={styles.secondaryText}>
+          </ThemedText>
+          <ThemedText variant="body">
             Com um toque, você confirma que está tudo certo. Se você não
             responder em 48 horas, um contato de emergência recebe uma mensagem
             via WhatsApp.
-          </Text>
+          </ThemedText>
         </View>
 
         <ThemedButton
@@ -39,13 +40,5 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     gap: 12,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: "bold",
-  },
-  secondaryText: {
-    fontSize: 18,
-    fontWeight: "600",
   },
 });

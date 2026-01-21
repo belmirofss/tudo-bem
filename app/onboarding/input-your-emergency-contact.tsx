@@ -1,10 +1,12 @@
-import { Text } from "react-native";
+import { ThemedText } from "@/components/ThemedText";
 import { ThemeView } from "../../components/ThemeView";
 
 export default function InputYourEmergencyContact() {
   return (
     <ThemeView>
-      <Text>Input Your Emergency Contact Screen</Text>
+      <ThemedText variant="body">
+        Input Your Emergency Contact Screen
+      </ThemedText>
     </ThemeView>
   );
 }

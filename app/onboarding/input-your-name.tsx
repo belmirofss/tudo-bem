@@ -1,10 +1,10 @@
-import { Text } from "react-native";
+import { ThemedText } from "@/components/ThemedText";
 import { ThemeView } from "../../components/ThemeView";
 
 export default function InputYourName() {
   return (
     <ThemeView>
-      <Text>Input Your Name Screen</Text>
+      <ThemedText variant="body">Input Your Name Screen</ThemedText>
     </ThemeView>
   );
 }
