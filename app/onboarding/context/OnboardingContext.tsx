@@ -71,3 +71,5 @@ export function useOnboarding() {
 
   return context;
 }
+
+export default OnboardingProvider;

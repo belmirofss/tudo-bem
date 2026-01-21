@@ -12,7 +12,8 @@ export const ThemeView = ({ children }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 18,
+    paddingHorizontal: 24,
+    paddingVertical: 36,
     backgroundColor: Colors.background,
   },
 });

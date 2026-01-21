@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Colors } from "../constants";
 
-type ButtonVariant = "good" | "bad";
+type ButtonVariant = "good" | "bad" | "neutral";
 type ButtonSize = "normal" | "large";
 
 type Props = TouchableOpacityProps & {
@@ -39,6 +39,10 @@ export const ThemedButton = ({
       buttonStyle.push(styles.badButton);
     }
 
+    if (variant === "neutral") {
+      buttonStyle.push(styles.neutralButton);
+    }
+
     return buttonStyle;
   };
 
@@ -66,6 +70,9 @@ const styles = StyleSheet.create({
   },
   badButton: {
     backgroundColor: Colors.button.bad,
+  },
+  neutralButton: {
+    backgroundColor: Colors.button.neutral,
   },
   largeButton: {
     paddingVertical: 48,

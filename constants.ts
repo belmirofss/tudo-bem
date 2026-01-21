@@ -10,6 +10,7 @@ export const Colors = {
   button: {
     good: "#0B6623",
     bad: "#990F02",
+    neutral: "#08519c",
   },
 
   shadow: "#000",
