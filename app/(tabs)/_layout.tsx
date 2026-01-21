@@ -8,7 +8,6 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors.text.primary,
         tabBarInactiveTintColor: Colors.text.secondary,
-        headerShown: false,
       }}
     >
       <Tabs.Screen
@@ -18,6 +17,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="home" size={24} color={color} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen

@@ -9,16 +9,19 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>Tudo bem?</Text>
-          <Text style={styles.advice}>
-            Você tem 48 horas para responder. Caso contrário, entraremos em
-            contato com seu contato de emergência.
-          </Text>
         </View>
 
         <View style={styles.buttonContainer}>
           <ThemedButton title="Sim, estou bem 👍" variant="good" size="large" />
           <ThemedButton title="Não estou bem" variant="bad" />
         </View>
+        <Text style={styles.secondaryText}>
+          Se você não responder em 03:00, uma mensagem será enviada para seu
+          contato de emergência.
+        </Text>
+        <Text style={styles.secondaryText}>
+          Última resposta: 21/01/2025 14:30
+        </Text>
       </View>
     </ThemeView>
   );
@@ -35,7 +38,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold",
   },
-  advice: {
+  secondaryText: {
     fontSize: 16,
     fontWeight: "600",
     color: Colors.text.secondary,
