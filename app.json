@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "tudo-bem",
+    "name": "Tudo bem?",
     "slug": "tudo-bem",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,17 +13,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundImage": "./assets/images/android-icon-background.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "predictiveBackGestureEnabled": false,
+      "package": "com.yabcompany.tudobem"
     },
     "plugins": [
       "expo-router",
@@ -43,6 +39,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a4a1d2a0-610c-435d-b3de-80df387c958e"
+      }
     }
   }
 }
