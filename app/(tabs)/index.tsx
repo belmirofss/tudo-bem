@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { ThemeView } from "../../components/ThemeView";
 import { ThemedButton } from "../../components/ThemedButton";
+import { Colors } from "../../constants";
 
 export default function HomeScreen() {
   return (
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   advice: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#6f6f6f",
+    color: Colors.text.secondary,
   },
   buttonContainer: {
     flexDirection: "column",

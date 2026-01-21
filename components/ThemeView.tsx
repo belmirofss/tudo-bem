@@ -1,4 +1,5 @@
 import { StyleSheet, View } from "react-native";
+import { Colors } from "../constants";
 
 type Props = {
   children: React.ReactNode;
@@ -12,6 +13,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 18,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
   },
 });

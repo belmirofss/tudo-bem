@@ -6,6 +6,7 @@ import {
   TouchableOpacityProps,
   ViewStyle,
 } from "react-native";
+import { Colors } from "../constants";
 
 type ButtonVariant = "good" | "bad";
 type ButtonSize = "normal" | "large";
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingVertical: 24,
     borderRadius: 16,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 16,
@@ -61,16 +62,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   goodButton: {
-    backgroundColor: "#0B6623",
+    backgroundColor: Colors.button.good,
   },
   badButton: {
-    backgroundColor: "#990F02",
+    backgroundColor: Colors.button.bad,
   },
   largeButton: {
     paddingVertical: 48,
   },
   buttonText: {
-    color: "#FFF",
+    color: Colors.text.white,
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
