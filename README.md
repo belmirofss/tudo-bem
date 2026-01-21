@@ -1,6 +1,6 @@
 # Tudo Bem
 
-A safety check-in app that requires user confirmation every 48 hours. If no check-in occurs, it automatically sends a WhatsApp message to the designated emergency contact.
+A check-in app that requires user confirmation every 48 hours. If no check-in occurs, it automatically sends a WhatsApp message to an emergency contact.
 
 ## Quick Start
 
