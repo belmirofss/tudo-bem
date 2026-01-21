@@ -2,6 +2,7 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
   ViewStyle,
@@ -43,12 +44,26 @@ export const ThemedButton = ({
       buttonStyle.push(styles.neutralButton);
     }
 
+    if (props.disabled) {
+      buttonStyle.push(styles.disabledButton);
+    }
+
     return buttonStyle;
+  };
+
+  const getTextStyle = () => {
+    const textStyle: StyleProp<TextStyle> = [styles.buttonText];
+
+    if (props.disabled) {
+      textStyle.push(styles.disabledButtonText);
+    }
+
+    return textStyle;
   };
 
   return (
     <TouchableOpacity style={[getButtonStyle(), style]} {...props}>
-      <Text style={styles.buttonText}>{title}</Text>
+      <Text style={getTextStyle()}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -77,10 +92,18 @@ const styles = StyleSheet.create({
   largeButton: {
     paddingVertical: 48,
   },
+  disabledButton: {
+    backgroundColor: Colors.button.disabled,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   buttonText: {
     color: Colors.text.white,
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  disabledButtonText: {
+    color: Colors.text.disabled,
   },
 });

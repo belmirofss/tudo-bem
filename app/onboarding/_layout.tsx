@@ -7,7 +7,8 @@ export default function OnboardingLayout() {
       <Stack screenOptions={{ headerShown: false }} initialRouteName="welcome">
         <Stack.Screen name="welcome" />
         <Stack.Screen name="input-your-name" />
-        <Stack.Screen name="input-your-emergency-contact" />
+        <Stack.Screen name="input-your-emergency-contact-name" />
+        <Stack.Screen name="input-your-emergency-contact-whatsapp" />
         <Stack.Screen name="review" />
       </Stack>
     </OnboardingProvider>

@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 interface OnboardingData {
   name: string;
@@ -12,6 +18,9 @@ interface OnboardingContextType {
   updateEmergencyContactName: (name: string) => void;
   updateEmergencyContactWhatsapp: (whatsapp: string) => void;
   resetOnboarding: () => void;
+  isValidName: boolean;
+  isValidEmergencyContactName: boolean;
+  isValidEmergencyContactWhatsapp: boolean;
 }
 
 const defaultOnboardingData: OnboardingData = {
@@ -47,6 +56,19 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     setData(defaultOnboardingData);
   };
 
+  const isValidName = useMemo(() => data.name.trim().length >= 3, [data.name]);
+  const isValidEmergencyContactName = useMemo(
+    () => data.emergencyContactName.trim().length >= 3,
+    [data.emergencyContactName],
+  );
+  const isValidEmergencyContactWhatsapp = useMemo(
+    () =>
+      /^\(\d{2}\) \d{5}-\d{4}$|^\(\d{2}\) \d{4}-\d{4}$/.test(
+        data.emergencyContactWhatsapp,
+      ),
+    [data.emergencyContactWhatsapp],
+  );
+
   return (
     <OnboardingContext.Provider
       value={{
@@ -55,6 +77,9 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
         updateEmergencyContactName,
         updateEmergencyContactWhatsapp,
         resetOnboarding,
+        isValidName,
+        isValidEmergencyContactName,
+        isValidEmergencyContactWhatsapp,
       }}
     >
       {children}

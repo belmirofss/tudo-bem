@@ -6,28 +6,31 @@ import { ThemedTextInput } from "../../components/ThemedTextInput";
 import { ThemeView } from "../../components/ThemeView";
 import { useOnboarding } from "./context/OnboardingContext";
 
-export default function InputYourName() {
+export default function InputYourEmergencyContactName() {
   const router = useRouter();
-  const { updateName, data, isValidName } = useOnboarding();
+  const { updateEmergencyContactName, data, isValidEmergencyContactName } =
+    useOnboarding();
 
   return (
     <ThemeView>
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <ThemedText variant="title">Qual é seu nome?</ThemedText>
+          <ThemedText variant="title">
+            Qual o nome do seu contato de emergência?
+          </ThemedText>
           <ThemedTextInput
-            value={data.name}
-            onChangeText={updateName}
-            placeholder="Digite seu nome"
+            value={data.emergencyContactName}
+            onChangeText={updateEmergencyContactName}
+            placeholder="Digite o nome do contato"
           />
         </View>
 
         <ThemedButton
           title="Continuar"
           variant="neutral"
-          disabled={!isValidName}
+          disabled={!isValidEmergencyContactName}
           onPress={() =>
-            router.push("/onboarding/input-your-emergency-contact-name")
+            router.push("/onboarding/input-your-emergency-contact-whatsapp")
           }
         />
       </View>

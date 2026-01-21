@@ -5,12 +5,14 @@ export const Colors = {
     primary: "#000",
     secondary: "#6f6f6f",
     white: "#FFF",
+    disabled: "#999",
   },
 
   button: {
     good: "#0B6623",
     bad: "#990F02",
     neutral: "#08519c",
+    disabled: "#ccc",
   },
 
   shadow: "#000",
