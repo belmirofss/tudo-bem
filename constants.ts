@@ -17,3 +17,6 @@ export const Colors = {
 
   shadow: "#000",
 } as const;
+
+export const BACKEND_URL =
+  "https://us-central1-tudo-bem-85e5f.cloudfunctions.net";
