@@ -38,3 +38,45 @@ export const register = functions.https.onRequest((req, res) => {
     });
   });
 });
+
+export const checkin = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const { deviceId } = req.body;
+
+    if (!deviceId) {
+      return res.status(400).json({
+        error: "deviceId is required",
+      });
+    }
+
+    const installationRef = db.collection("installations").doc(deviceId);
+
+    const installationSnap = await installationRef.get();
+
+    if (!installationSnap.exists) {
+      return res.status(404).json({
+        error: "Device not found",
+      });
+    }
+
+    const now = admin.firestore.Timestamp.now();
+
+    await installationRef.update({
+      lastCheckinAt: now,
+      updatedAt: now,
+    });
+
+    await db.collection("checkins").add({
+      deviceId,
+      checkedAt: now,
+    });
+
+    return res.status(200).json({
+      checkedAt: now.toDate().toISOString(),
+    });
+  });
+});
