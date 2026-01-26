@@ -29,6 +29,7 @@ export const register = functions.https.onRequest((req, res) => {
       name,
       emergencyContactName,
       emergencyContactWhatsapp,
+      disabled: false,
       lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
