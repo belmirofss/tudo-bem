@@ -45,11 +45,11 @@ export const checkin = functions.https.onRequest((req, res) => {
       return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const { deviceId } = req.body;
+    const deviceId = req.header("x-device-id");
 
     if (!deviceId) {
       return res.status(400).json({
-        error: "deviceId is required",
+        error: "x-device-id header is required",
       });
     }
 
