@@ -3,6 +3,8 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
+import { validateDeviceWithId } from "./helpers/validateDevice";
+import { validateMethod } from "./helpers/validateMethod";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -10,9 +12,7 @@ const corsHandler = cors({ origin: true });
 
 export const register = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
+    if (!validateMethod(req, res, "POST")) return;
 
     const { name, emergencyContactName, emergencyContactWhatsapp } = req.body;
 
@@ -43,27 +43,12 @@ export const register = functions.https.onRequest((req, res) => {
 
 export const checkin = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
+    if (!validateMethod(req, res, "POST")) return;
 
-    const deviceId = req.header("x-device-id");
+    const deviceData = await validateDeviceWithId(req, res);
+    if (!deviceData) return;
 
-    if (!deviceId) {
-      return res.status(400).json({
-        error: "x-device-id header is required",
-      });
-    }
-
-    const installationRef = db.collection("installations").doc(deviceId);
-
-    const installationSnap = await installationRef.get();
-
-    if (!installationSnap.exists) {
-      return res.status(404).json({
-        error: "Device not found",
-      });
-    }
+    const { installationRef } = deviceData;
 
     const now = admin.firestore.Timestamp.now();
 
@@ -73,7 +58,7 @@ export const checkin = functions.https.onRequest((req, res) => {
     });
 
     await db.collection("checkins").add({
-      deviceId,
+      deviceId: deviceData.deviceId,
       checkedAt: now,
     });
 
@@ -89,26 +74,12 @@ export const checkin = functions.https.onRequest((req, res) => {
 
 export const me = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    if (req.method !== "GET") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
+    if (!validateMethod(req, res, "GET")) return;
 
-    const deviceId = req.header("x-device-id");
+    const deviceData = await validateDeviceWithId(req, res);
+    if (!deviceData) return;
 
-    if (!deviceId) {
-      return res.status(400).json({
-        error: "x-device-id header is required",
-      });
-    }
-
-    const installationRef = db.collection("installations").doc(deviceId);
-    const installationSnap = await installationRef.get();
-
-    if (!installationSnap.exists) {
-      return res.status(404).json({
-        error: "Device not found",
-      });
-    }
+    const { installationSnap } = deviceData;
 
     const {
       name,
@@ -132,26 +103,12 @@ export const me = functions.https.onRequest((req, res) => {
 
 export const disableDevice = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
+    if (!validateMethod(req, res, "POST")) return;
 
-    const deviceId = req.header("x-device-id");
+    const deviceData = await validateDeviceWithId(req, res);
+    if (!deviceData) return;
 
-    if (!deviceId) {
-      return res.status(400).json({
-        error: "x-device-id header is required",
-      });
-    }
-
-    const installationRef = db.collection("installations").doc(deviceId);
-    const installationSnap = await installationRef.get();
-
-    if (!installationSnap.exists) {
-      return res.status(404).json({
-        error: "Device not found",
-      });
-    }
+    const { installationRef } = deviceData;
 
     await installationRef.update({
       disabled: true,
