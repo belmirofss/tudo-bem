@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { BACKEND_URL } from "../constants";
 import { useDeviceId } from "./useDeviceId";
@@ -10,6 +10,7 @@ interface CheckinResponse {
 
 export const useCheckin = () => {
   const { deviceId } = useDeviceId();
+  const queryClient = useQueryClient();
 
   return useMutation<CheckinResponse, Error>({
     mutationFn: async () => {
@@ -27,6 +28,10 @@ export const useCheckin = () => {
         },
       );
       return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate the me query to refresh user data
+      queryClient.invalidateQueries({ queryKey: ["me", deviceId] });
     },
   });
 };
