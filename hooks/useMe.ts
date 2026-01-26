@@ -7,7 +7,8 @@ interface MeResponse {
   name: string;
   emergencyContactName: string;
   emergencyContactWhatsapp: string;
-  lastCheckinAt: string | null;
+  lastCheckinAt: string;
+  checkinUntil: string;
 }
 
 export const useMe = () => {

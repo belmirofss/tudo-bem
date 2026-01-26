@@ -2,6 +2,7 @@ import cors from "cors";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
+import { CHECKIN_WINDOW_HOURS } from "./constants";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -28,7 +29,7 @@ export const register = functions.https.onRequest((req, res) => {
       name,
       emergencyContactName,
       emergencyContactWhatsapp,
-      lastCheckinAt: null,
+      lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -75,8 +76,12 @@ export const checkin = functions.https.onRequest((req, res) => {
       checkedAt: now,
     });
 
+    const checkinUntil = now.toDate();
+    checkinUntil.setHours(checkinUntil.getHours() + CHECKIN_WINDOW_HOURS);
+
     return res.status(200).json({
       checkedAt: now.toDate().toISOString(),
+      checkinUntil: checkinUntil.toISOString(),
     });
   });
 });
@@ -111,13 +116,15 @@ export const me = functions.https.onRequest((req, res) => {
       lastCheckinAt,
     } = installationSnap.data()!;
 
+    const checkinUntil = lastCheckinAt.toDate();
+    checkinUntil.setHours(checkinUntil.getHours() + CHECKIN_WINDOW_HOURS);
+
     return res.status(200).json({
       name,
       emergencyContactName,
       emergencyContactWhatsapp,
-      lastCheckinAt: lastCheckinAt
-        ? lastCheckinAt.toDate().toISOString()
-        : null,
+      lastCheckinAt: lastCheckinAt.toDate().toISOString(),
+      checkinUntil: checkinUntil.toISOString(),
     });
   });
 });

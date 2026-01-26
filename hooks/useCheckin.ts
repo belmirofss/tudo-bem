@@ -5,6 +5,7 @@ import { useDeviceId } from "./useDeviceId";
 
 interface CheckinResponse {
   checkedAt: string;
+  checkinUntil: string;
 }
 
 export const useCheckin = () => {
