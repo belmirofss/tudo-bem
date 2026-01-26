@@ -1,7 +1,7 @@
 import { Text, TextStyle } from "react-native";
 import { Colors } from "../constants";
 
-type TextVariant = "title" | "body" | "secondaryBody";
+type TextVariant = "title" | "strongBody" | "body" | "secondaryBody";
 
 type Props = {
   children: React.ReactNode;
@@ -15,6 +15,12 @@ export const ThemedText = ({ children, variant, style }: Props) => {
       case "title":
         return {
           fontSize: 36,
+          fontWeight: "bold",
+          color: Colors.text.primary,
+        };
+      case "strongBody":
+        return {
+          fontSize: 22,
           fontWeight: "bold",
           color: Colors.text.primary,
         };
