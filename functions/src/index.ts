@@ -129,3 +129,35 @@ export const me = functions.https.onRequest((req, res) => {
     });
   });
 });
+
+export const disableDevice = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const deviceId = req.header("x-device-id");
+
+    if (!deviceId) {
+      return res.status(400).json({
+        error: "x-device-id header is required",
+      });
+    }
+
+    const installationRef = db.collection("installations").doc(deviceId);
+    const installationSnap = await installationRef.get();
+
+    if (!installationSnap.exists) {
+      return res.status(404).json({
+        error: "Device not found",
+      });
+    }
+
+    await installationRef.update({
+      disabled: true,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return res.status(200).json({});
+  });
+});
