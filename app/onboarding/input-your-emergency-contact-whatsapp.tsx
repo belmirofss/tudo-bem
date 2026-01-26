@@ -21,12 +21,19 @@ export default function InputYourEmergencyContactWhatsapp() {
           <ThemedPhoneInput onChangeText={updateEmergencyContactWhatsapp} />
         </View>
 
-        <ThemedButton
-          title="Continuar"
-          variant="neutral"
-          disabled={!isValidEmergencyContactWhatsapp}
-          onPress={() => router.push("/onboarding/review")}
-        />
+        <View style={styles.buttonsContainer}>
+          <ThemedButton
+            title="Continuar"
+            variant="neutral"
+            disabled={!isValidEmergencyContactWhatsapp}
+            onPress={() => router.push("/onboarding/review")}
+          />
+          <ThemedButton
+            title="Voltar"
+            variant="link"
+            onPress={() => router.back()}
+          />
+        </View>
       </View>
     </ThemeView>
   );
@@ -40,6 +47,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     gap: 24,
+    width: "100%",
+  },
+  buttonsContainer: {
+    gap: 8,
     width: "100%",
   },
 });

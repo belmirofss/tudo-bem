@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Colors } from "../constants";
 
-type ButtonVariant = "good" | "bad" | "neutral";
+type ButtonVariant = "good" | "bad" | "neutral" | "link";
 type ButtonSize = "normal" | "large";
 
 type Props = TouchableOpacityProps & {
@@ -44,6 +44,10 @@ export const ThemedButton = ({
       buttonStyle.push(styles.neutralButton);
     }
 
+    if (variant === "link") {
+      buttonStyle.push(styles.linkButton);
+    }
+
     if (props.disabled) {
       buttonStyle.push(styles.disabledButton);
     }
@@ -56,6 +60,10 @@ export const ThemedButton = ({
 
     if (props.disabled) {
       textStyle.push(styles.disabledButtonText);
+    }
+
+    if (variant === "link") {
+      textStyle.push(styles.linkButtonText);
     }
 
     return textStyle;
@@ -89,6 +97,11 @@ const styles = StyleSheet.create({
   neutralButton: {
     backgroundColor: Colors.button.neutral,
   },
+  linkButton: {
+    backgroundColor: "transparent",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   largeButton: {
     paddingVertical: 48,
   },
@@ -105,5 +118,8 @@ const styles = StyleSheet.create({
   },
   disabledButtonText: {
     color: Colors.text.disabled,
+  },
+  linkButtonText: {
+    color: Colors.text.secondary,
   },
 });

@@ -63,12 +63,19 @@ export default function Review() {
         </View>
       </View>
 
-      <ThemedButton
-        title={registerMutation.isPending ? "Registrando..." : "Confirmar"}
-        variant="good"
-        onPress={handleConfirm}
-        disabled={registerMutation.isPending}
-      />
+      <View style={styles.buttonsContainer}>
+        <ThemedButton
+          title={registerMutation.isPending ? "Registrando..." : "Confirmar"}
+          variant="good"
+          onPress={handleConfirm}
+          disabled={registerMutation.isPending}
+        />
+        <ThemedButton
+          title="Voltar"
+          variant="link"
+          onPress={() => router.back()}
+        />
+      </View>
     </ThemeView>
   );
 }
@@ -83,5 +90,9 @@ const styles = StyleSheet.create({
     marginTop: 24,
     flex: 1,
     gap: 24,
+  },
+  buttonsContainer: {
+    gap: 8,
+    width: "100%",
   },
 });

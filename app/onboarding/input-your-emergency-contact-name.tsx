@@ -25,14 +25,21 @@ export default function InputYourEmergencyContactName() {
           />
         </View>
 
-        <ThemedButton
-          title="Continuar"
-          variant="neutral"
-          disabled={!isValidEmergencyContactName}
-          onPress={() =>
-            router.push("/onboarding/input-your-emergency-contact-whatsapp")
-          }
-        />
+        <View style={styles.buttonsContainer}>
+          <ThemedButton
+            title="Continuar"
+            variant="neutral"
+            disabled={!isValidEmergencyContactName}
+            onPress={() =>
+              router.push("/onboarding/input-your-emergency-contact-whatsapp")
+            }
+          />
+          <ThemedButton
+            title="Voltar"
+            variant="link"
+            onPress={() => router.back()}
+          />
+        </View>
       </View>
     </ThemeView>
   );
@@ -46,6 +53,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     gap: 24,
+    width: "100%",
+  },
+  buttonsContainer: {
+    gap: 8,
     width: "100%",
   },
 });
