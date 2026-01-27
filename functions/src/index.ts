@@ -1,12 +1,11 @@
 import cors from "cors";
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
+import { admin } from "./firebase";
 import { validateDeviceWithId } from "./helpers/validateDevice";
 import { validateMethod } from "./helpers/validateMethod";
 
-admin.initializeApp();
 const db = admin.firestore();
 const corsHandler = cors({ origin: true });
 

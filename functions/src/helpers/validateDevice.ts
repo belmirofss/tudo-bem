@@ -1,5 +1,5 @@
 import { Response } from "express";
-import * as admin from "firebase-admin";
+import { admin } from "../firebase";
 
 const db = admin.firestore();
 
