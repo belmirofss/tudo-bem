@@ -4,9 +4,36 @@ import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import Toast from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import { Colors } from "../constants";
 
 const queryClient = new QueryClient();
+
+const toastConfig = {
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: Colors.button.good }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{
+        fontSize: 18,
+        fontWeight: "400",
+      }}
+    />
+  ),
+  error: (props: any) => (
+    <ErrorToast
+      {...props}
+      style={{ borderLeftColor: Colors.button.bad }}
+      text1Style={{
+        fontSize: 18,
+      }}
+      text2Style={{
+        fontSize: 18,
+      }}
+    />
+  ),
+};
 
 export default function RootLayout() {
   return (
@@ -31,7 +58,7 @@ export default function RootLayout() {
           <Stack.Screen name="onboarding" />
           <Stack.Screen name="(app)" />
         </Stack>
-        <Toast />
+        <Toast config={toastConfig} />
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
