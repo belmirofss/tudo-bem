@@ -52,7 +52,11 @@ export default function HomeScreen() {
             onPress={handleCheckin}
             disabled={checkinMutation.isPending}
           />
-          <ThemedButton title="Não estou bem" variant="bad" />
+          <ThemedButton
+            title="Não estou bem"
+            variant="bad"
+            disabled={checkinMutation.isPending}
+          />
         </View>
         <ThemedText variant="secondaryBody">
           Se você não responder até {formatDate(data.checkinUntil)}, uma
