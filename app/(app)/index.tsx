@@ -19,14 +19,12 @@ export default function HomeScreen() {
 
       Toast.show({
         type: "success",
-        text1: "Sucesso!",
-        text2: "Checkin realizado com sucesso!",
+        text1: "Checkin realizado com sucesso!",
       });
     } catch {
       Toast.show({
         type: "error",
-        text1: "Erro!",
-        text2: "Erro ao realizar checkin!",
+        text1: "Erro ao realizar checkin!",
       });
     }
   };

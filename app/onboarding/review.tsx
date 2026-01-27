@@ -26,8 +26,7 @@ export default function Review() {
 
       Toast.show({
         type: "success",
-        text1: "Sucesso!",
-        text2: "Cadastro realizado!",
+        text1: "Cadastro realizado!",
       });
 
       setTimeout(() => {
