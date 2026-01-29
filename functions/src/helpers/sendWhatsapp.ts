@@ -1,9 +1,11 @@
 import { Twilio } from "twilio";
 import { TWILIO_SANDBOX_NUMBER } from "../constants";
 
-const twilio = new Twilio(process.env.TWILIO_SID!, process.env.TWILIO_TOKEN!);
-
-export async function sendWhatsapp(to: string, userName: string) {
+export async function sendWhatsapp(
+  twilio: Twilio,
+  to: string,
+  userName: string,
+) {
   const fromNumber =
     process.env.NODE_ENV === "production"
       ? `whatsapp:+55${to}`

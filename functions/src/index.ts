@@ -1,5 +1,8 @@
 import cors from "cors";
 import * as functions from "firebase-functions";
+// eslint-disable-next-line import/no-unresolved
+import { defineSecret } from "firebase-functions/params";
+import { Twilio } from "twilio";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
 import { admin } from "./firebase";
@@ -9,6 +12,9 @@ import { validateMethod } from "./helpers/validateMethod";
 
 const db = admin.firestore();
 const corsHandler = cors({ origin: true });
+
+const TWILIO_SID = defineSecret("TWILIO_SID");
+const TWILIO_TOKEN = defineSecret("TWILIO_TOKEN");
 
 export const register = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
@@ -122,12 +128,15 @@ export const disableDevice = functions.https.onRequest((req, res) => {
 });
 
 export const checkInactiveUsers = functions.scheduler.onSchedule(
-  "every 5 minutes",
+  {
+    schedule: "every 5 minutes",
+    secrets: [TWILIO_SID, TWILIO_TOKEN],
+  },
   async () => {
+    const twilio = new Twilio(TWILIO_SID.value(), TWILIO_TOKEN.value());
     const now = admin.firestore.Timestamp.now();
-    const hoursLimit = process.env.NODE_ENV === "production" ? 48 : 5 / 60; // 48 hours in production, 5 minutes in dev
     const limit = admin.firestore.Timestamp.fromDate(
-      new Date(now.toMillis() - hoursLimit * 60 * 60 * 1000),
+      new Date(now.toMillis() - 48 * 60 * 60 * 1000),
     );
 
     const snapshot = await db
@@ -141,7 +150,7 @@ export const checkInactiveUsers = functions.scheduler.onSchedule(
       const data = doc.data();
 
       try {
-        await sendWhatsapp(data.emergencyContactWhatsapp, data.name);
+        await sendWhatsapp(twilio, data.emergencyContactWhatsapp, data.name);
 
         await doc.ref.update({
           alertSent: true,
