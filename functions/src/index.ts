@@ -3,6 +3,7 @@ import * as functions from "firebase-functions";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
 import { admin } from "./firebase";
+import { sendWhatsapp } from "./helpers/sendWhatsapp";
 import { validateDeviceWithId } from "./helpers/validateDevice";
 import { validateMethod } from "./helpers/validateMethod";
 
@@ -29,6 +30,7 @@ export const register = functions.https.onRequest((req, res) => {
       emergencyContactName,
       emergencyContactWhatsapp,
       disabled: false,
+      alertSent: false,
       lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -53,6 +55,7 @@ export const checkin = functions.https.onRequest((req, res) => {
 
     await installationRef.update({
       lastCheckinAt: now,
+      alertSent: false,
       updatedAt: now,
     });
 
@@ -117,3 +120,40 @@ export const disableDevice = functions.https.onRequest((req, res) => {
     return res.status(200).json({});
   });
 });
+
+export const checkInactiveUsers = functions.scheduler.onSchedule(
+  "every 5 minutes",
+  async () => {
+    const now = admin.firestore.Timestamp.now();
+    const hoursLimit = process.env.NODE_ENV === "production" ? 48 : 5 / 60; // 48 hours in production, 5 minutes in dev
+    const limit = admin.firestore.Timestamp.fromDate(
+      new Date(now.toMillis() - hoursLimit * 60 * 60 * 1000),
+    );
+
+    const snapshot = await db
+      .collection("installations")
+      .where("disabled", "==", false)
+      .where("alertSent", "==", false)
+      .where("lastCheckinAt", "<", limit)
+      .get();
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+
+      try {
+        await sendWhatsapp(data.emergencyContactWhatsapp, data.name);
+
+        await doc.ref.update({
+          alertSent: true,
+          updatedAt: now,
+        });
+
+        console.log(`Alert sent for user: ${data.name}`);
+      } catch (error) {
+        console.error(`Failed to send alert for user ${data.name}:`, error);
+      }
+    }
+
+    console.log("Cron executed at", now.toDate().toISOString());
+  },
+);

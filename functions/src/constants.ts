@@ -1,1 +1,3 @@
 export const CHECKIN_WINDOW_HOURS = 48;
+
+export const TWILIO_SANDBOX_NUMBER = "+14155238886";
