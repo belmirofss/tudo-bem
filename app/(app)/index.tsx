@@ -1,7 +1,9 @@
+import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { ErrorState } from "@/components/ErrorState";
 import { LoadingState } from "@/components/LoadingState";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ThemeView } from "../../components/ThemeView";
@@ -12,6 +14,7 @@ import { useMe } from "../../hooks/useMe";
 export default function HomeScreen() {
   const { data, isLoading, error } = useMe();
   const checkinMutation = useCheckin();
+  const [showNotWellModal, setShowNotWellModal] = useState(false);
 
   const handleCheckin = async () => {
     try {
@@ -27,6 +30,25 @@ export default function HomeScreen() {
         text1: "Erro ao realizar checkin!",
       });
     }
+  };
+
+  const handleNotWellPress = () => {
+    setShowNotWellModal(true);
+  };
+
+  const handleNotWellConfirm = () => {
+    setShowNotWellModal(false);
+    // Here you can add what happens when user confirms they're not well
+    // For now, just show a toast message
+    Toast.show({
+      type: "info",
+      text1: "Enviamos uma notificação para seu contato de emergência.",
+      text2: "Mantenha-se seguro e procure ajuda se necessário.",
+    });
+  };
+
+  const handleNotWellCancel = () => {
+    setShowNotWellModal(false);
   };
 
   if (isLoading) {
@@ -55,6 +77,7 @@ export default function HomeScreen() {
           <ThemedButton
             title="Não estou bem"
             variant="bad"
+            onPress={handleNotWellPress}
             disabled={checkinMutation.isPending}
           />
         </View>
@@ -66,6 +89,16 @@ export default function HomeScreen() {
           Última resposta: {formatDate(data.lastCheckinAt)}
         </ThemedText>
       </View>
+
+      <ConfirmationModal
+        visible={showNotWellModal}
+        title="Você não está bem?"
+        message="Deseja enviar uma notificação imediata para seu contato de emergência? Ele será informado que você precisa de ajuda."
+        confirmText="Sim, notificar"
+        cancelText="Cancelar"
+        onConfirm={handleNotWellConfirm}
+        onCancel={handleNotWellCancel}
+      />
     </ThemeView>
   );
 }
