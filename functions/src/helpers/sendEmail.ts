@@ -4,7 +4,7 @@ export async function sendEmail(to: string, userName: string) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: "Tudo bem? <onboarding@resend.dev>",
+    from: "Tudo bem? <alerta@apptudobem.com.br>",
     to,
     subject: `Alerta de segurança - ${userName}`,
     html: `
