@@ -18,7 +18,7 @@ export default function Welcome() {
           <ThemedText variant="body">
             Com um toque, você confirma que está tudo certo. Se você não
             responder em 48 horas, um contato de emergência recebe uma mensagem
-            via WhatsApp.
+            via e-mail.
           </ThemedText>
         </View>
 

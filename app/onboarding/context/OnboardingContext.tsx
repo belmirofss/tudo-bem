@@ -9,24 +9,24 @@ import React, {
 interface OnboardingData {
   name: string;
   emergencyContactName: string;
-  emergencyContactWhatsapp: string;
+  emergencyContactEmail: string;
 }
 
 interface OnboardingContextType {
   data: OnboardingData;
   updateName: (name: string) => void;
   updateEmergencyContactName: (name: string) => void;
-  updateEmergencyContactWhatsapp: (whatsapp: string) => void;
+  updateEmergencyContactEmail: (email: string) => void;
   resetOnboarding: () => void;
   isValidName: boolean;
   isValidEmergencyContactName: boolean;
-  isValidEmergencyContactWhatsapp: boolean;
+  isValidEmergencyContactEmail: boolean;
 }
 
 const defaultOnboardingData: OnboardingData = {
   name: "",
   emergencyContactName: "",
-  emergencyContactWhatsapp: "",
+  emergencyContactEmail: "",
 };
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(
@@ -48,8 +48,8 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     setData((prev) => ({ ...prev, emergencyContactName: name }));
   };
 
-  const updateEmergencyContactWhatsapp = (whatsapp: string) => {
-    setData((prev) => ({ ...prev, emergencyContactWhatsapp: whatsapp }));
+  const updateEmergencyContactEmail = (email: string) => {
+    setData((prev) => ({ ...prev, emergencyContactEmail: email }));
   };
 
   const resetOnboarding = () => {
@@ -61,10 +61,10 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     () => data.emergencyContactName.trim().length >= 3,
     [data.emergencyContactName],
   );
-  const isValidEmergencyContactWhatsapp = useMemo(() => {
-    const digits = data.emergencyContactWhatsapp.replace(/\D/g, "");
-    return digits.length === 10 || digits.length === 11;
-  }, [data.emergencyContactWhatsapp]);
+  const isValidEmergencyContactEmail = useMemo(() => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(data.emergencyContactEmail);
+  }, [data.emergencyContactEmail]);
 
   return (
     <OnboardingContext.Provider
@@ -72,11 +72,11 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
         data,
         updateName,
         updateEmergencyContactName,
-        updateEmergencyContactWhatsapp,
+        updateEmergencyContactEmail,
         resetOnboarding,
         isValidName,
         isValidEmergencyContactName,
-        isValidEmergencyContactWhatsapp,
+        isValidEmergencyContactEmail,
       }}
     >
       {children}

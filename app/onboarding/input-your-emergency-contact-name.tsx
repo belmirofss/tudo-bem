@@ -31,7 +31,7 @@ export default function InputYourEmergencyContactName() {
             variant="neutral"
             disabled={!isValidEmergencyContactName}
             onPress={() =>
-              router.push("/onboarding/input-your-emergency-contact-whatsapp")
+              router.push("/onboarding/input-your-emergency-contact-email")
             }
           />
           <ThemedButton

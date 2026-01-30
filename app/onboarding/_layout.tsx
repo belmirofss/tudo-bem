@@ -8,7 +8,7 @@ export default function OnboardingLayout() {
         <Stack.Screen name="welcome" />
         <Stack.Screen name="input-your-name" />
         <Stack.Screen name="input-your-emergency-contact-name" />
-        <Stack.Screen name="input-your-emergency-contact-whatsapp" />
+        <Stack.Screen name="input-your-emergency-contact-email" />
         <Stack.Screen name="review" />
       </Stack>
     </OnboardingProvider>

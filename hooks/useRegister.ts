@@ -5,7 +5,7 @@ import { BACKEND_URL } from "../constants";
 interface RegisterData {
   name: string;
   emergencyContactName: string;
-  emergencyContactWhatsapp: string;
+  emergencyContactEmail: string;
 }
 
 interface RegisterResponse {

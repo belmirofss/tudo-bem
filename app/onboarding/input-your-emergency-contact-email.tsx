@@ -2,13 +2,13 @@ import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { ThemedPhoneInput } from "../../components/ThemedPhoneInput";
+import { ThemedEmailInput } from "../../components/ThemedEmailInput";
 import { ThemeView } from "../../components/ThemeView";
 import { useOnboarding } from "./context/OnboardingContext";
 
-export default function InputYourEmergencyContactWhatsapp() {
+export default function InputYourEmergencyContactEmail() {
   const router = useRouter();
-  const { updateEmergencyContactWhatsapp, isValidEmergencyContactWhatsapp } =
+  const { data, updateEmergencyContactEmail, isValidEmergencyContactEmail } =
     useOnboarding();
 
   return (
@@ -16,16 +16,19 @@ export default function InputYourEmergencyContactWhatsapp() {
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <ThemedText variant="title">
-            Qual o número de WhatsApp do seu contato de emergência?
+            Qual o e-mail do seu contato de emergência?
           </ThemedText>
-          <ThemedPhoneInput onChangeText={updateEmergencyContactWhatsapp} />
+          <ThemedEmailInput
+            value={data.emergencyContactEmail}
+            onChangeText={updateEmergencyContactEmail}
+          />
         </View>
 
         <View style={styles.buttonsContainer}>
           <ThemedButton
             title="Continuar"
             variant="neutral"
-            disabled={!isValidEmergencyContactWhatsapp}
+            disabled={!isValidEmergencyContactEmail}
             onPress={() => router.push("/onboarding/review")}
           />
           <ThemedButton

@@ -6,7 +6,7 @@ import { useDeviceId } from "./useDeviceId";
 interface MeResponse {
   name: string;
   emergencyContactName: string;
-  emergencyContactWhatsapp: string;
+  emergencyContactEmail: string;
   lastCheckinAt: string;
   checkinUntil: string;
 }

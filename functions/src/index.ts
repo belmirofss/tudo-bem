@@ -2,27 +2,25 @@ import cors from "cors";
 import * as functions from "firebase-functions";
 // eslint-disable-next-line import/no-unresolved
 import { defineSecret } from "firebase-functions/params";
-import { Twilio } from "twilio";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
 import { admin } from "./firebase";
-import { sendWhatsapp } from "./helpers/sendWhatsapp";
+import { sendEmail } from "./helpers/sendEmail";
 import { validateDeviceWithId } from "./helpers/validateDevice";
 import { validateMethod } from "./helpers/validateMethod";
 
 const db = admin.firestore();
 const corsHandler = cors({ origin: true });
 
-const TWILIO_SID = defineSecret("TWILIO_SID");
-const TWILIO_TOKEN = defineSecret("TWILIO_TOKEN");
+const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
 
 export const register = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     if (!validateMethod(req, res, "POST")) return;
 
-    const { name, emergencyContactName, emergencyContactWhatsapp } = req.body;
+    const { name, emergencyContactName, emergencyContactEmail } = req.body;
 
-    if (!name || !emergencyContactName || !emergencyContactWhatsapp) {
+    if (!name || !emergencyContactName || !emergencyContactEmail) {
       return res.status(400).json({
         error: "Missing required fields",
       });
@@ -34,7 +32,7 @@ export const register = functions.https.onRequest((req, res) => {
       deviceId,
       name,
       emergencyContactName,
-      emergencyContactWhatsapp,
+      emergencyContactEmail,
       disabled: false,
       alertSent: false,
       lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -89,12 +87,8 @@ export const me = functions.https.onRequest((req, res) => {
 
     const { installationSnap } = deviceData;
 
-    const {
-      name,
-      emergencyContactName,
-      emergencyContactWhatsapp,
-      lastCheckinAt,
-    } = installationSnap.data()!;
+    const { name, emergencyContactName, emergencyContactEmail, lastCheckinAt } =
+      installationSnap.data()!;
 
     const checkinUntil = lastCheckinAt.toDate();
     checkinUntil.setHours(checkinUntil.getHours() + CHECKIN_WINDOW_HOURS);
@@ -102,7 +96,7 @@ export const me = functions.https.onRequest((req, res) => {
     return res.status(200).json({
       name,
       emergencyContactName,
-      emergencyContactWhatsapp,
+      emergencyContactEmail,
       lastCheckinAt: lastCheckinAt.toDate().toISOString(),
       checkinUntil: checkinUntil.toISOString(),
     });
@@ -130,10 +124,9 @@ export const disableDevice = functions.https.onRequest((req, res) => {
 export const checkInactiveUsers = functions.scheduler.onSchedule(
   {
     schedule: "every 5 minutes",
-    secrets: [TWILIO_SID, TWILIO_TOKEN],
+    secrets: [RESEND_API_KEY],
   },
   async () => {
-    const twilio = new Twilio(TWILIO_SID.value(), TWILIO_TOKEN.value());
     const now = admin.firestore.Timestamp.now();
     const limit = admin.firestore.Timestamp.fromDate(
       new Date(now.toMillis() - 48 * 60 * 60 * 1000),
@@ -150,7 +143,7 @@ export const checkInactiveUsers = functions.scheduler.onSchedule(
       const data = doc.data();
 
       try {
-        await sendWhatsapp(twilio, data.emergencyContactWhatsapp, data.name);
+        await sendEmail(data.emergencyContactEmail, data.name);
 
         await doc.ref.update({
           alertSent: true,

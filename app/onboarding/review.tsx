@@ -6,7 +6,6 @@ import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ThemeView } from "../../components/ThemeView";
 import { DEVICE_ID_KEY } from "../../constants";
-import { formatWhatsApp } from "../../helpers/formatWhatsApp";
 import { useRegister } from "../../hooks/useRegister";
 import { useOnboarding } from "./context/OnboardingContext";
 
@@ -19,7 +18,7 @@ export default function Review() {
       const result = await registerMutation.mutateAsync({
         name: data.name,
         emergencyContactName: data.emergencyContactName,
-        emergencyContactWhatsapp: data.emergencyContactWhatsapp,
+        emergencyContactEmail: data.emergencyContactEmail,
       });
 
       await SecureStore.setItemAsync(DEVICE_ID_KEY, result.deviceId);
@@ -49,10 +48,7 @@ export default function Review() {
           {[
             ["Nome", data.name],
             ["Contato de Emergência", data.emergencyContactName],
-            [
-              "WhatsApp do Contato de Emergência",
-              formatWhatsApp(data.emergencyContactWhatsapp),
-            ],
+            ["E-mail do Contato de Emergência", data.emergencyContactEmail],
           ].map(([title, value]) => (
             <View key={title}>
               <ThemedText variant="body">{title}</ThemedText>
