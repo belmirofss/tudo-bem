@@ -49,9 +49,6 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
-            ...(Platform.OS === "android" && {
-              navigationBarHidden: true,
-            }),
           }}
         >
           <Stack.Screen name="onboarding" />
