@@ -193,6 +193,7 @@ export default function AboutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 0,
   },
   header: {
     alignItems: "center",
