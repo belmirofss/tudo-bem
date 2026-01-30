@@ -5,7 +5,10 @@ import { defineSecret } from "firebase-functions/params";
 import { v4 as uuidv4 } from "uuid";
 import { CHECKIN_WINDOW_HOURS } from "./constants";
 import { admin } from "./firebase";
-import { sendEmail } from "./helpers/sendEmail";
+import {
+  createEmergency48HoursAlertEmailContent,
+  sendEmail,
+} from "./helpers/sendEmail";
 import { validateDeviceWithId } from "./helpers/validateDevice";
 import { validateMethod } from "./helpers/validateMethod";
 
@@ -143,7 +146,11 @@ export const checkInactiveUsers = functions.scheduler.onSchedule(
       const data = doc.data();
 
       try {
-        await sendEmail(data.emergencyContactEmail, data.name);
+        await sendEmail(
+          data.emergencyContactEmail,
+          `Alerta de segurança - ${data.name}`,
+          createEmergency48HoursAlertEmailContent(data.name),
+        );
 
         await doc.ref.update({
           alertSent: true,

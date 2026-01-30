@@ -1,13 +1,8 @@
 import { Resend } from "resend";
 
-export async function sendEmail(to: string, userName: string) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+const EMAIL_FROM = "Tudo bem? <alerta@apptudobem.com.br>";
 
-  await resend.emails.send({
-    from: "Tudo bem? <alerta@apptudobem.com.br>",
-    to,
-    subject: `Alerta de segurança - ${userName}`,
-    html: `
+export const createEmergency48HoursAlertEmailContent = (userName: string) => `
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:24px; font-family: Arial, Helvetica, sans-serif;">
   <tr>
     <td align="center">
@@ -64,6 +59,15 @@ export async function sendEmail(to: string, userName: string) {
     </td>
   </tr>
 </table>
-    `,
+`;
+
+export async function sendEmail(to: string, subject: string, content: string) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to,
+    subject,
+    html: content,
   });
 }
