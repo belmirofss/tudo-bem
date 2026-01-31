@@ -107,6 +107,23 @@ export default function AboutScreen() {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
+            <MaterialIcons name="warning" size={24} color={Colors.button.bad} />
+            <ThemedText variant="strongBody" style={styles.sectionTitle}>
+              Importante antes de desinstalar
+            </ThemedText>
+          </View>
+          <ThemedText variant="body" style={styles.sectionText}>
+            ⚠️ Antes de desinstalar o aplicativo, desative ou exclua sua conta.
+          </ThemedText>
+          <ThemedText variant="body" style={styles.sectionText}>
+            Caso contrário, o sistema continuará enviando alertas
+            automaticamente para seu contato de emergência mesmo após a
+            desinstalação.
+          </ThemedText>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
             <MaterialIcons
               name="security"
               size={24}
@@ -122,61 +139,6 @@ export default function AboutScreen() {
             compartilhamento de dados com terceiros.{"\n"}• Você pode desativar
             o sistema a qualquer momento.
           </ThemedText>
-        </View>
-
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons
-              name="people"
-              size={24}
-              color={Colors.button.neutral}
-            />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Ideal para
-            </ThemedText>
-          </View>
-          <View style={styles.featureList}>
-            <View style={styles.feature}>
-              <MaterialIcons
-                name="check-circle"
-                size={20}
-                color={Colors.button.good}
-              />
-              <ThemedText variant="body" style={styles.featureText}>
-                Idosos que moram sozinhos.
-              </ThemedText>
-            </View>
-            <View style={styles.feature}>
-              <MaterialIcons
-                name="check-circle"
-                size={20}
-                color={Colors.button.good}
-              />
-              <ThemedText variant="body" style={styles.featureText}>
-                Pessoas com condições de saúde crônicas.
-              </ThemedText>
-            </View>
-            <View style={styles.feature}>
-              <MaterialIcons
-                name="check-circle"
-                size={20}
-                color={Colors.button.good}
-              />
-              <ThemedText variant="body" style={styles.featureText}>
-                Quem trabalha ou viaja sozinho.
-              </ThemedText>
-            </View>
-            <View style={styles.feature}>
-              <MaterialIcons
-                name="check-circle"
-                size={20}
-                color={Colors.button.good}
-              />
-              <ThemedText variant="body" style={styles.featureText}>
-                Qualquer pessoa que queira tranquilidade extra.
-              </ThemedText>
-            </View>
-          </View>
         </View>
 
         <View style={styles.footer}>
