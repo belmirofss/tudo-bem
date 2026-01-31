@@ -15,7 +15,7 @@ export const useMe = () => {
   const { deviceId } = useDeviceId();
 
   return useQuery<MeResponse, Error>({
-    queryKey: ["me", deviceId],
+    queryKey: ["me"],
     queryFn: async () => {
       if (!deviceId) {
         throw new Error("Device ID not found");

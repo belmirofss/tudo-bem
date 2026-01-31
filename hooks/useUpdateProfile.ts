@@ -3,24 +3,29 @@ import axios from "axios";
 import { BACKEND_URL } from "../constants";
 import { useDeviceId } from "./useDeviceId";
 
-interface CheckinResponse {
-  checkedAt: string;
-  checkinUntil: string;
+interface UpdateProfileData {
+  name: string;
+  emergencyContactName: string;
+  emergencyContactEmail: string;
 }
 
-export const useCheckin = () => {
+interface UpdateProfileResponse {
+  message: string;
+}
+
+export const useUpdateProfile = () => {
   const { deviceId } = useDeviceId();
   const queryClient = useQueryClient();
 
-  return useMutation<CheckinResponse, Error>({
-    mutationFn: async () => {
+  return useMutation<UpdateProfileResponse, Error, UpdateProfileData>({
+    mutationFn: async (data: UpdateProfileData) => {
       if (!deviceId) {
         throw new Error("Device ID not found");
       }
 
-      const response = await axios.post<CheckinResponse>(
-        `${BACKEND_URL}/checkin`,
-        {},
+      const response = await axios.put<UpdateProfileResponse>(
+        `${BACKEND_URL}/updateProfile`,
+        data,
         {
           headers: {
             "x-device-id": deviceId,
