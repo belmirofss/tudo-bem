@@ -19,7 +19,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.yabcompany.tudobem"
+      "package": "com.yabcompany.tudobem",
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "expo-router",
