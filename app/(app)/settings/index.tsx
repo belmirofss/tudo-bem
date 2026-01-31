@@ -8,10 +8,10 @@ import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { ThemeView } from "../../components/ThemeView";
-import { DEVICE_ID_KEY } from "../../constants";
-import { useDeleteAccount } from "../../hooks/useDeleteAccount";
-import { useMe } from "../../hooks/useMe";
+import { ThemeView } from "../../../components/ThemeView";
+import { DEVICE_ID_KEY } from "../../../constants";
+import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
+import { useMe } from "../../../hooks/useMe";
 
 export default function SettingsScreen() {
   const { data, isLoading, error } = useMe();
@@ -88,6 +88,13 @@ export default function SettingsScreen() {
             Ações
           </ThemedText>
           <ThemedButton
+            title="Atualizar dados"
+            variant="neutral"
+            onPress={() => router.push("/(app)/settings/update-profile")}
+            style={styles.buttonSpacing}
+            disabled={deleteAccountMutation.isPending}
+          />
+          <ThemedButton
             title="Excluir conta"
             variant="bad"
             onPress={handleDeletePress}
@@ -125,5 +132,8 @@ const styles = StyleSheet.create({
   },
   infoItem: {
     gap: 4,
+  },
+  buttonSpacing: {
+    marginBottom: 12,
   },
 });

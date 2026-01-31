@@ -5,6 +5,11 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import {
+  isValidEmail as validateEmail,
+  isValidEmergencyContactName as validateEmergencyContactName,
+  isValidName as validateName,
+} from "../../../helpers/validation";
 
 interface OnboardingData {
   name: string;
@@ -56,15 +61,15 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     setData(defaultOnboardingData);
   };
 
-  const isValidName = useMemo(() => data.name.trim().length >= 3, [data.name]);
+  const isValidName = useMemo(() => validateName(data.name), [data.name]);
   const isValidEmergencyContactName = useMemo(
-    () => data.emergencyContactName.trim().length >= 3,
+    () => validateEmergencyContactName(data.emergencyContactName),
     [data.emergencyContactName],
   );
-  const isValidEmergencyContactEmail = useMemo(() => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(data.emergencyContactEmail);
-  }, [data.emergencyContactEmail]);
+  const isValidEmergencyContactEmail = useMemo(
+    () => validateEmail(data.emergencyContactEmail),
+    [data.emergencyContactEmail],
+  );
 
   return (
     <OnboardingContext.Provider
