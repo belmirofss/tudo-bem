@@ -231,6 +231,46 @@ export const sendReminders = functions.scheduler.onSchedule(
   },
 );
 
+export const deleteAccount = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (!validateMethod(req, res, "DELETE")) return;
+
+    const deviceData = await validateDeviceWithId(req, res);
+    if (!deviceData) return;
+
+    const { deviceId, installationRef } = deviceData;
+
+    try {
+      // Delete all checkins for this device
+      const checkinsSnapshot = await db
+        .collection("checkins")
+        .where("deviceId", "==", deviceId)
+        .get();
+
+      const batch = db.batch();
+
+      // Delete checkins
+      checkinsSnapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      // Delete installation
+      batch.delete(installationRef);
+
+      await batch.commit();
+
+      return res.status(200).json({
+        message: "Account deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      return res.status(500).json({
+        error: "Failed to delete account",
+      });
+    }
+  });
+});
+
 export const checkInactiveUsers = functions.scheduler.onSchedule(
   {
     schedule: "every 5 minutes",
