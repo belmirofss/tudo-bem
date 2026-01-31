@@ -82,7 +82,7 @@ export default function HomeScreen() {
           />
         </View>
         <ThemedText variant="secondaryBody">
-          Se não responder até {formatDate(data.checkinUntil)}, uma e-mail será
+          Se não responder até {formatDate(data.checkinUntil)}, um e-mail será
           enviado para seu contato de emergência.
         </ThemedText>
         <ThemedText variant="secondaryBody">

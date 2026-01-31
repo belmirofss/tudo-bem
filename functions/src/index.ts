@@ -9,6 +9,7 @@ import {
   createEmergency48HoursAlertEmailContent,
   sendEmail,
 } from "./helpers/sendEmail";
+import { sendExpoPush } from "./helpers/sendExpoPush";
 import { validateDeviceWithId } from "./helpers/validateDevice";
 import { validateMethod } from "./helpers/validateMethod";
 
@@ -37,18 +38,7 @@ async function sendPush(
   token: string,
   level: "24h" | "12h" | "4h" | "2h" | "1h" | "30m" | "10m",
 ): Promise<void> {
-  try {
-    await admin.messaging().send({
-      token,
-      notification: {
-        title: "Tudo bem com você? 🫶",
-        body: getMessage(level),
-      },
-    });
-    console.log(`Push notification sent for level: ${level}`);
-  } catch (error) {
-    console.error(`Failed to send push notification:`, error);
-  }
+  await sendExpoPush(token, "Tudo bem com você? 🫶", getMessage(level));
 }
 
 async function maybeSendReminder(
@@ -220,11 +210,14 @@ export const sendReminders = functions.scheduler.onSchedule(
       .collection("installations")
       .where("disabled", "==", false)
       .where("lastCheckinAt", "!=", null)
-      .where("fcmToken", "!=", null)
       .get();
 
     for (const doc of snapshot.docs) {
       const data = doc.data();
+
+      // Filter out documents without fcmToken in memory
+      if (!data.fcmToken) continue;
+
       const last = data.lastCheckinAt.toMillis();
       const elapsed = now - last;
       const remaining = limit48h - elapsed;
@@ -267,13 +260,11 @@ export const checkInactiveUsers = functions.scheduler.onSchedule(
         );
 
         if (data.fcmToken) {
-          await admin.messaging().send({
-            token: data.fcmToken,
-            notification: {
-              title: "⚠️ Alerta",
-              body: "Seu contato de emergência foi notificado! 🚨",
-            },
-          });
+          await sendExpoPush(
+            data.fcmToken,
+            "⚠️ Alerta",
+            "Seu contato de emergência foi notificado! 🚨",
+          );
           console.log(`Push notification sent for 48h alert: ${data.name}`);
         }
 
