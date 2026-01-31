@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { Colors } from "../constants";
 
@@ -36,26 +37,28 @@ const toastConfig = {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView
-      style={{
-        flex: 1,
-        ...(Platform.OS === "android" && {
-          paddingTop: 0,
-        }),
-      }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <StatusBar style="auto" hidden={true} />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="(app)" />
-        </Stack>
-        <Toast config={toastConfig} />
-      </QueryClientProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView
+        style={{
+          flex: 1,
+          ...(Platform.OS === "android" && {
+            paddingTop: 0,
+          }),
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <StatusBar style="auto" hidden={true} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="(app)" />
+          </Stack>
+          <Toast config={toastConfig} />
+        </QueryClientProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
