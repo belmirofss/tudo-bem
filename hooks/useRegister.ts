@@ -6,6 +6,7 @@ interface RegisterData {
   name: string;
   emergencyContactName: string;
   emergencyContactEmail: string;
+  fcmToken?: string;
 }
 
 interface RegisterResponse {

@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ThemeView } from "../../components/ThemeView";
 import { DEVICE_ID_KEY } from "../../constants";
+import { initializeNotifications } from "../../helpers/notifications";
 import { useRegister } from "../../hooks/useRegister";
 import { useOnboarding } from "./context/OnboardingContext";
 
@@ -15,10 +16,14 @@ export default function Review() {
 
   const handleConfirm = async () => {
     try {
+      // Get FCM token for push notifications
+      const fcmToken = await initializeNotifications();
+
       const result = await registerMutation.mutateAsync({
         name: data.name,
         emergencyContactName: data.emergencyContactName,
         emergencyContactEmail: data.emergencyContactEmail,
+        fcmToken: fcmToken || undefined,
       });
 
       await SecureStore.setItemAsync(DEVICE_ID_KEY, result.deviceId);
