@@ -59,6 +59,13 @@ export const register = functions.https.onRequest((req, res) => {
         },
       });
 
+    const now = admin.firestore.Timestamp.now();
+    await db.collection("checkins").add({
+      deviceId,
+      checkedAt: now,
+      source: "register",
+    });
+
     return res.status(201).json({
       deviceId,
     });
@@ -94,6 +101,7 @@ export const checkin = functions.https.onRequest((req, res) => {
     await db.collection("checkins").add({
       deviceId: deviceData.deviceId,
       checkedAt: now,
+      source: "checkin",
     });
 
     const checkinUntil = now.toDate();
@@ -147,9 +155,10 @@ export const toggleDevice = functions.https.onRequest((req, res) => {
     const { installationRef, installationSnap } = deviceData;
     const currentDisabledState = installationSnap.data()?.disabled || false;
 
+    const now = admin.firestore.Timestamp.now();
     await installationRef.update({
       disabled: !currentDisabledState,
-      lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastCheckinAt: now,
       alertSent: false,
       remindersSent: {
         "24h": false,
@@ -160,7 +169,13 @@ export const toggleDevice = functions.https.onRequest((req, res) => {
         "30m": false,
         "10m": false,
       },
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: now,
+    });
+
+    await db.collection("checkins").add({
+      deviceId: deviceData.deviceId,
+      checkedAt: now,
+      source: "toggleDevice",
     });
 
     return res.status(200).json({
