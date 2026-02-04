@@ -115,8 +115,13 @@ export const me = functions.https.onRequest((req, res) => {
 
     const { installationSnap } = deviceData;
 
-    const { name, emergencyContactName, emergencyContactEmail, lastCheckinAt } =
-      installationSnap.data()!;
+    const {
+      name,
+      emergencyContactName,
+      emergencyContactEmail,
+      lastCheckinAt,
+      disabled,
+    } = installationSnap.data()!;
 
     const checkinUntil = lastCheckinAt.toDate();
     checkinUntil.setHours(checkinUntil.getHours() + CHECKIN_WINDOW_HOURS);
@@ -127,25 +132,40 @@ export const me = functions.https.onRequest((req, res) => {
       emergencyContactEmail,
       lastCheckinAt: lastCheckinAt.toDate().toISOString(),
       checkinUntil: checkinUntil.toISOString(),
+      disabled: disabled || false,
     });
   });
 });
 
-export const disableDevice = functions.https.onRequest((req, res) => {
+export const toggleDevice = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     if (!validateMethod(req, res, "POST")) return;
 
     const deviceData = await validateDeviceWithId(req, res);
     if (!deviceData) return;
 
-    const { installationRef } = deviceData;
+    const { installationRef, installationSnap } = deviceData;
+    const currentDisabledState = installationSnap.data()?.disabled || false;
 
     await installationRef.update({
-      disabled: true,
+      disabled: !currentDisabledState,
+      lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
+      alertSent: false,
+      remindersSent: {
+        "24h": false,
+        "12h": false,
+        "4h": false,
+        "2h": false,
+        "1h": false,
+        "30m": false,
+        "10m": false,
+      },
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return res.status(200).json({});
+    return res.status(200).json({
+      disabled: !currentDisabledState,
+    });
   });
 });
 
