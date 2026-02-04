@@ -9,14 +9,49 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ThemeView } from "../../../components/ThemeView";
-import { DEVICE_ID_KEY } from "../../../constants";
+import { Colors, DEVICE_ID_KEY } from "../../../constants";
+
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
 import { useMe } from "../../../hooks/useMe";
+import { useToggleDevice } from "../../../hooks/useToggleDevice";
 
 export default function SettingsScreen() {
   const { data, isLoading, error } = useMe();
   const deleteAccountMutation = useDeleteAccount();
+  const toggleDeviceMutation = useToggleDevice();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showToggleModal, setShowToggleModal] = useState(false);
+
+  const handleToggleDevice = async () => {
+    try {
+      const newDisabledState = await toggleDeviceMutation.mutateAsync();
+
+      Toast.show({
+        type: "success",
+        text1: newDisabledState
+          ? "Dispositivo desativado"
+          : "Dispositivo ativado",
+      });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao alterar estado do dispositivo!",
+      });
+    }
+  };
+
+  const handleTogglePress = () => {
+    setShowToggleModal(true);
+  };
+
+  const handleToggleConfirm = () => {
+    setShowToggleModal(false);
+    handleToggleDevice();
+  };
+
+  const handleToggleCancel = () => {
+    setShowToggleModal(false);
+  };
 
   const handleDeleteAccount = async () => {
     try {
@@ -80,6 +115,17 @@ export default function SettingsScreen() {
                 <ThemedText variant="strongBody">{value}</ThemedText>
               </View>
             ))}
+            <View style={styles.infoItem}>
+              <ThemedText variant="body">Status do Dispositivo</ThemedText>
+              <ThemedText
+                variant="strongBody"
+                style={
+                  data?.disabled ? styles.disabledStatus : styles.enabledStatus
+                }
+              >
+                {data?.disabled ? "Desativado" : "Ativado"}
+              </ThemedText>
+            </View>
           </View>
         </View>
 
@@ -93,6 +139,15 @@ export default function SettingsScreen() {
             onPress={() => router.push("/(app)/settings/update-profile")}
             style={styles.buttonSpacing}
             disabled={deleteAccountMutation.isPending}
+          />
+          <ThemedButton
+            title={
+              data?.disabled ? "Ativar dispositivo" : "Desativar dispositivo"
+            }
+            variant={data?.disabled ? "good" : "bad"}
+            onPress={handleTogglePress}
+            style={styles.buttonSpacing}
+            disabled={toggleDeviceMutation.isPending}
           />
           <ThemedButton
             title="Excluir conta"
@@ -111,6 +166,21 @@ export default function SettingsScreen() {
         cancelText="Cancelar"
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
+      />
+      <ConfirmationModal
+        visible={showToggleModal}
+        title={
+          data?.disabled ? "Ativar dispositivo?" : "Desativar dispositivo?"
+        }
+        message={
+          data?.disabled
+            ? "Tem certeza que deseja ativar seu dispositivo? Você passará a receber lembretes e seu contato de emergência será notificado se necessário."
+            : "Tem certeza que deseja desativar seu dispositivo? Seu contato de emergência não será notificado e você não receberá lembretes."
+        }
+        confirmText={data?.disabled ? "Sim, ativar" : "Sim, desativar"}
+        cancelText="Cancelar"
+        onConfirm={handleToggleConfirm}
+        onCancel={handleToggleCancel}
       />
     </ThemeView>
   );
@@ -135,5 +205,11 @@ const styles = StyleSheet.create({
   },
   buttonSpacing: {
     marginBottom: 12,
+  },
+  enabledStatus: {
+    color: Colors.button.good,
+  },
+  disabledStatus: {
+    color: Colors.button.bad,
   },
 });

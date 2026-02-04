@@ -9,6 +9,7 @@ interface MeResponse {
   emergencyContactEmail: string;
   lastCheckinAt: string;
   checkinUntil: string;
+  disabled: boolean;
 }
 
 export const useMe = () => {
