@@ -98,64 +98,62 @@ export default function SettingsScreen() {
 
   return (
     <ThemeView>
-      <View style={styles.container}>
-        <View style={styles.section}>
-          <ThemedText variant="strongBody" style={styles.sectionTitle}>
-            Informações da Conta
-          </ThemedText>
+      <View style={styles.section}>
+        <ThemedText variant="strongBody" style={styles.sectionTitle}>
+          Informações da Conta
+        </ThemedText>
 
-          <View style={styles.infoContainer}>
-            {[
-              ["Nome", data.name],
-              ["Contato de Emergência", data.emergencyContactName],
-              ["E-mail do Contato de Emergência", data.emergencyContactEmail],
-            ].map(([title, value]) => (
-              <View key={title} style={styles.infoItem}>
-                <ThemedText variant="body">{title}</ThemedText>
-                <ThemedText variant="strongBody">{value}</ThemedText>
-              </View>
-            ))}
-            <View style={styles.infoItem}>
-              <ThemedText variant="body">Status do Dispositivo</ThemedText>
-              <ThemedText
-                variant="strongBody"
-                style={
-                  data?.disabled ? styles.disabledStatus : styles.enabledStatus
-                }
-              >
-                {data?.disabled ? "Desativado" : "Ativado"}
-              </ThemedText>
+        <View style={styles.infoContainer}>
+          {[
+            ["Nome", data.name],
+            ["Contato de Emergência", data.emergencyContactName],
+            ["E-mail do Contato de Emergência", data.emergencyContactEmail],
+          ].map(([title, value]) => (
+            <View key={title} style={styles.infoItem}>
+              <ThemedText variant="body">{title}</ThemedText>
+              <ThemedText variant="strongBody">{value}</ThemedText>
             </View>
+          ))}
+          <View style={styles.infoItem}>
+            <ThemedText variant="body">Status do Dispositivo</ThemedText>
+            <ThemedText
+              variant="strongBody"
+              style={
+                data?.disabled ? styles.disabledStatus : styles.enabledStatus
+              }
+            >
+              {data?.disabled ? "Desativado" : "Ativado"}
+            </ThemedText>
           </View>
         </View>
+      </View>
 
-        <View style={styles.section}>
-          <ThemedText variant="strongBody" style={styles.sectionTitle}>
-            Ações
-          </ThemedText>
-          <ThemedButton
-            title="Atualizar dados"
-            variant="neutral"
-            onPress={() => router.push("/(app)/settings/update-profile")}
-            style={styles.buttonSpacing}
-            disabled={deleteAccountMutation.isPending}
-          />
-          <ThemedButton
-            title={
-              data?.disabled ? "Ativar dispositivo" : "Desativar dispositivo"
-            }
-            variant={data?.disabled ? "good" : "bad"}
-            onPress={handleTogglePress}
-            style={styles.buttonSpacing}
-            disabled={toggleDeviceMutation.isPending}
-          />
-          <ThemedButton
-            title="Excluir conta"
-            variant="bad"
-            onPress={handleDeletePress}
-            disabled={deleteAccountMutation.isPending}
-          />
-        </View>
+      <View style={styles.section}>
+        <ThemedText variant="strongBody" style={styles.sectionTitle}>
+          Ações
+        </ThemedText>
+        <ThemedButton
+          title="Atualizar dados"
+          variant="neutral"
+          onPress={() => router.push("/(app)/settings/update-profile")}
+          style={styles.buttonSpacing}
+          disabled={deleteAccountMutation.isPending}
+        />
+        <ThemedButton
+          title={
+            data?.disabled ? "Ativar dispositivo" : "Desativar dispositivo"
+          }
+          variant={data?.disabled ? "good" : "bad"}
+          onPress={handleTogglePress}
+          style={styles.buttonSpacing}
+          disabled={toggleDeviceMutation.isPending}
+        />
+        <ThemedButton
+          title="Excluir conta"
+          variant="bad"
+          onPress={handleDeletePress}
+          disabled={deleteAccountMutation.isPending}
+        />
       </View>
 
       <ConfirmationModal

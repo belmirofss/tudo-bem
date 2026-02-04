@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "../../components/ThemedText";
 import { ThemeView } from "../../components/ThemeView";
 import { Colors } from "../../constants";
@@ -7,156 +7,137 @@ import { Colors } from "../../constants";
 export default function AboutScreen() {
   return (
     <ThemeView>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <MaterialIcons
-              name="thumb-up"
-              size={48}
-              color={Colors.button.good}
-            />
-          </View>
-          <ThemedText variant="title" style={styles.title}>
-            Tudo bem?
+      <View style={styles.header}>
+        <View style={styles.iconContainer}>
+          <MaterialIcons name="thumb-up" size={48} color={Colors.button.good} />
+        </View>
+        <ThemedText variant="title" style={styles.title}>
+          Tudo bem?
+        </ThemedText>
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons
+            name="lightbulb"
+            size={24}
+            color={Colors.button.neutral}
+          />
+          <ThemedText variant="strongBody" style={styles.sectionTitle}>
+            Como funciona
           </ThemedText>
         </View>
+        <ThemedText variant="body" style={styles.sectionText}>
+          O &ldquo;Tudo bem?&rdquo; é um aplicativo simples de check-in a cada
+          48 horas que sinaliza que você está bem.
+        </ThemedText>
+      </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons
-              name="lightbulb"
-              size={24}
-              color={Colors.button.neutral}
-            />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Como funciona
-            </ThemedText>
-          </View>
-          <ThemedText variant="body" style={styles.sectionText}>
-            O &ldquo;Tudo bem?&rdquo; é um aplicativo simples de check-in a cada
-            48 horas que sinaliza que você está bem.
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons
+            name="touch-app"
+            size={24}
+            color={Colors.button.good}
+          />
+          <ThemedText variant="strongBody" style={styles.sectionTitle}>
+            Passo a passo
           </ThemedText>
         </View>
-
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons
-              name="touch-app"
-              size={24}
-              color={Colors.button.good}
-            />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Passo a passo
-            </ThemedText>
-          </View>
-          <View style={styles.stepList}>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <ThemedText variant="strongBody" style={styles.stepNumberText}>
-                  1
-                </ThemedText>
-              </View>
-              <ThemedText variant="body" style={styles.stepText}>
-                Cadastre-se e adicione um contato de emergência.
+        <View style={styles.stepList}>
+          <View style={styles.step}>
+            <View style={styles.stepNumber}>
+              <ThemedText variant="strongBody" style={styles.stepNumberText}>
+                1
               </ThemedText>
             </View>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <ThemedText variant="strongBody" style={styles.stepNumberText}>
-                  2
-                </ThemedText>
-              </View>
-              <ThemedText variant="body" style={styles.stepText}>
-                Toque em &ldquo;Sim, estou bem 👍&rdquo; a cada 48 horas.
+            <ThemedText variant="body" style={styles.stepText}>
+              Cadastre-se e adicione um contato de emergência.
+            </ThemedText>
+          </View>
+          <View style={styles.step}>
+            <View style={styles.stepNumber}>
+              <ThemedText variant="strongBody" style={styles.stepNumberText}>
+                2
               </ThemedText>
             </View>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <ThemedText variant="strongBody" style={styles.stepNumberText}>
-                  3
-                </ThemedText>
-              </View>
-              <ThemedText variant="body" style={styles.stepText}>
-                Se não responder, enviamos um e-mail automaticamente.
+            <ThemedText variant="body" style={styles.stepText}>
+              Toque em &ldquo;Sim, estou bem 👍&rdquo; a cada 48 horas.
+            </ThemedText>
+          </View>
+          <View style={styles.step}>
+            <View style={styles.stepNumber}>
+              <ThemedText variant="strongBody" style={styles.stepNumberText}>
+                3
               </ThemedText>
             </View>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons
-              name="email"
-              size={24}
-              color={Colors.button.neutral}
-            />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Alerta automático
+            <ThemedText variant="body" style={styles.stepText}>
+              Se não responder, enviamos um e-mail automaticamente.
             </ThemedText>
           </View>
-          <ThemedText variant="body" style={styles.sectionText}>
-            Caso você não faça o check-in em 48 horas, seu contato de emergência
-            receberá automaticamente um e-mail informando que não tivemos
-            notícias suas.
-          </ThemedText>
-          <ThemedText variant="body" style={styles.sectionText}>
-            O e-mail incluirá seu nome e solicitará que a pessoa entre em
-            contato para verificar se está tudo bem.
-          </ThemedText>
         </View>
+      </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons name="warning" size={24} color={Colors.button.bad} />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Importante antes de desinstalar
-            </ThemedText>
-          </View>
-          <ThemedText variant="body" style={styles.sectionText}>
-            ⚠️ Antes de desinstalar o aplicativo, desative ou exclua sua conta.
-          </ThemedText>
-          <ThemedText variant="body" style={styles.sectionText}>
-            Caso contrário, o sistema continuará enviando alertas
-            automaticamente para seu contato de emergência mesmo após a
-            desinstalação.
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="email" size={24} color={Colors.button.neutral} />
+          <ThemedText variant="strongBody" style={styles.sectionTitle}>
+            Alerta automático
           </ThemedText>
         </View>
+        <ThemedText variant="body" style={styles.sectionText}>
+          Caso você não faça o check-in em 48 horas, seu contato de emergência
+          receberá automaticamente um e-mail informando que não tivemos notícias
+          suas.
+        </ThemedText>
+        <ThemedText variant="body" style={styles.sectionText}>
+          O e-mail incluirá seu nome e solicitará que a pessoa entre em contato
+          para verificar se está tudo bem.
+        </ThemedText>
+      </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons
-              name="security"
-              size={24}
-              color={Colors.button.good}
-            />
-            <ThemedText variant="strongBody" style={styles.sectionTitle}>
-              Privacidade e segurança
-            </ThemedText>
-          </View>
-          <ThemedText variant="body" style={styles.sectionText}>
-            • Suas informações são armazenadas de forma segura.{"\n"}• Apenas
-            seu contato de emergência será notificado.{"\n"}• Sem
-            compartilhamento de dados com terceiros.{"\n"}• Você pode desativar
-            o sistema a qualquer momento.
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="warning" size={24} color={Colors.button.bad} />
+          <ThemedText variant="strongBody" style={styles.sectionTitle}>
+            Importante antes de desinstalar
           </ThemedText>
         </View>
+        <ThemedText variant="body" style={styles.sectionText}>
+          ⚠️ Antes de desinstalar o aplicativo, desative ou exclua sua conta.
+        </ThemedText>
+        <ThemedText variant="body" style={styles.sectionText}>
+          Caso contrário, o sistema continuará enviando alertas automaticamente
+          para seu contato de emergência mesmo após a desinstalação.
+        </ThemedText>
+      </View>
 
-        <View style={styles.footer}>
-          <ThemedText variant="secondaryBody" style={styles.footerText}>
-            &ldquo;Às vezes, tudo o que a gente precisa é avisar que está
-            bem.&rdquo;
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="security" size={24} color={Colors.button.good} />
+          <ThemedText variant="strongBody" style={styles.sectionTitle}>
+            Privacidade e segurança
           </ThemedText>
         </View>
-      </ScrollView>
+        <ThemedText variant="body" style={styles.sectionText}>
+          • Suas informações são armazenadas de forma segura.{"\n"}• Apenas seu
+          contato de emergência será notificado.{"\n"}• Sem compartilhamento de
+          dados com terceiros.{"\n"}• Você pode desativar o sistema a qualquer
+          momento.
+        </ThemedText>
+      </View>
+
+      <View style={styles.footer}>
+        <ThemedText variant="secondaryBody" style={styles.footerText}>
+          &ldquo;Às vezes, tudo o que a gente precisa é avisar que está
+          bem.&rdquo;
+        </ThemedText>
+      </View>
     </ThemeView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 0,
-  },
   header: {
     alignItems: "center",
     marginBottom: 32,

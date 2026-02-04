@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "../constants";
 
@@ -8,26 +8,33 @@ type Props = {
 
 export const ThemeView = ({ children }: Props) => {
   const insets = useSafeAreaInsets();
+  const screenHeight = Dimensions.get("window").height;
 
   return (
-    <View
-      style={[
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={[
         styles.container,
         {
-          paddingBottom: Math.max(insets.bottom, 24) + 18, // Ensure minimum padding
+          minHeight: screenHeight - insets.top - insets.bottom,
+          paddingBottom: insets.bottom,
         },
       ]}
+      showsVerticalScrollIndicator={false}
     >
       {children}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
+  },
+  container: {
+    flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 36,
+    paddingTop: 20,
     backgroundColor: Colors.background,
   },
 });
