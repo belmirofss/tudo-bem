@@ -10,10 +10,12 @@ import { ThemeView } from "../../components/ThemeView";
 import { formatDate } from "../../helpers/formatDate";
 import { useCheckin } from "../../hooks/useCheckin";
 import { useMe } from "../../hooks/useMe";
+import { useSendEmergencyAlert } from "../../hooks/useSendEmergencyAlert";
 
 export default function HomeScreen() {
   const { data, isLoading, error } = useMe();
   const checkinMutation = useCheckin();
+  const emergencyAlertMutation = useSendEmergencyAlert();
   const [showNotWellModal, setShowNotWellModal] = useState(false);
 
   const handleCheckin = async () => {
@@ -36,15 +38,21 @@ export default function HomeScreen() {
     setShowNotWellModal(true);
   };
 
-  const handleNotWellConfirm = () => {
+  const handleNotWellConfirm = async () => {
     setShowNotWellModal(false);
-    // Here you can add what happens when user confirms they're not well
-    // For now, just show a toast message
-    Toast.show({
-      type: "info",
-      text1: "Notificação enviada.",
-      text2: "Mantenha-se seguro e procure ajuda se necessário.",
-    });
+    try {
+      await emergencyAlertMutation.mutateAsync();
+
+      Toast.show({
+        type: "success",
+        text1: "Alerta enviado com sucesso!",
+      });
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao enviar alerta!",
+      });
+    }
   };
 
   const handleNotWellCancel = () => {
@@ -78,7 +86,9 @@ export default function HomeScreen() {
             title="Não estou bem"
             variant="bad"
             onPress={handleNotWellPress}
-            disabled={checkinMutation.isPending}
+            disabled={
+              checkinMutation.isPending || emergencyAlertMutation.isPending
+            }
           />
         </View>
         <ThemedText variant="secondaryBody">

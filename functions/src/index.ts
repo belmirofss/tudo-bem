@@ -8,6 +8,7 @@ import { admin } from "./firebase";
 import { maybeSendReminder } from "./helpers/maybeSendReminder";
 import {
   createEmergency48HoursAlertEmailContent,
+  createManualAlertEmailContent,
   sendEmail,
 } from "./helpers/sendEmail";
 import { sendExpoPush } from "./helpers/sendExpoPush";
@@ -290,6 +291,48 @@ export const deleteAccount = functions.https.onRequest((req, res) => {
     }
   });
 });
+
+export const iAmNotWellAndSendEmail = functions.https.onRequest(
+  { secrets: [RESEND_API_KEY] },
+  (req, res) => {
+    corsHandler(req, res, async () => {
+      if (!validateMethod(req, res, "POST")) return;
+
+      const deviceData = await validateDeviceWithId(req, res);
+      if (!deviceData) return;
+
+      const { installationRef, installationSnap } = deviceData;
+      const data = installationSnap.data()!;
+
+      try {
+        await sendEmail(
+          data.emergencyContactEmail,
+          `Alerta de emergência - ${data.name}`,
+          createManualAlertEmailContent(data.name),
+        );
+
+        await installationRef.update({
+          alertSent: true,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        console.log(`Manual alert sent for user: ${data.name}`);
+
+        return res.status(200).json({
+          message: "Alert sent successfully",
+        });
+      } catch (error) {
+        console.error(
+          `Failed to send manual alert for user ${data.name}:`,
+          error,
+        );
+        return res.status(500).json({
+          error: "Failed to send alert",
+        });
+      }
+    });
+  },
+);
 
 export const checkInactiveUsers = functions.scheduler.onSchedule(
   {
