@@ -42,7 +42,7 @@ export default function HomeScreen() {
     // For now, just show a toast message
     Toast.show({
       type: "info",
-      text1: "Enviamos uma notificação para seu contato de emergência.",
+      text1: "Notificação enviada.",
       text2: "Mantenha-se seguro e procure ajuda se necessário.",
     });
   };
