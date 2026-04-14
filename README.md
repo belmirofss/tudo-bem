@@ -12,6 +12,10 @@ A mobile check-in app that requires user confirmation every 48 hours. If no chec
 4. The user can also manually trigger an emergency alert at any time by tapping "I'm not well".
 5. Push notification reminders are sent as the 48-hour window approaches (24h, 12h, 4h, 2h, 1h, 30m, 10m before deadline).
 
+## Development
+
+This app was totally developed using the free model SWE-1.5 from Windsurf.
+
 ## Tech stack
 
 - **Frontend:** React Native (Expo) with file-based routing via Expo Router
