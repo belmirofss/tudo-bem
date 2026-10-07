@@ -120,8 +120,10 @@ export default function Review() {
           Alerta de segurança - {data.name}
         </ThemedText>
         <ThemedText variant="caption">
-          Não recebemos uma confirmação de {data.name} há mais de 48 horas. Por
-          favor, tente contato o quanto antes para verificar se está tudo bem.
+          Olá, {data.emergencyContactName.trim().split(" ")[0]}.{" "}
+          {data.name.trim().split(" ")[0]} usa o app Tudo bem? para confirmar
+          que está tudo certo a cada 48 horas e indicou você como contato de
+          emergência. O prazo terminou sem nenhuma resposta.
         </ThemedText>
       </View>
 
