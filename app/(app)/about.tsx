@@ -1,73 +1,104 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import Constants from "expo-constants";
+import { router } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ThemedText } from "../../components/ThemedText";
 import { ThemeView } from "../../components/ThemeView";
-import { Colors } from "../../constants";
+import { Colors, Fonts } from "../../constants";
+
+const TIMELINE = [
+  { time: "0h", text: "Você toca em “Estou bem”.", color: Colors.primary },
+  { time: "24h → 10min", text: "Lembretes no celular.", color: Colors.warningText },
+  { time: "48h", text: "Seu contato recebe um e-mail.", color: Colors.danger },
+];
+
+const PRIVACY = [
+  "Dados guardados com segurança",
+  "Só seu contato é notificado",
+  "Nada é compartilhado com terceiros",
+  "Pause quando quiser",
+];
 
 export default function AboutScreen() {
   return (
-    <ThemeView>
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <MaterialIcons
-            name="lightbulb"
-            size={24}
-            color={Colors.button.neutral}
-          />
-          <ThemedText variant="strongBody" style={styles.sectionTitle}>
-            Como funciona
-          </ThemedText>
+    <ThemeView withBottomInset={false} contentStyle={styles.content}>
+      <ThemedText variant="title" accessibilityRole="header" style={styles.inset}>
+        Sobre
+      </ThemedText>
+
+      <View style={styles.card}>
+        <ThemedText variant="heading">Como funciona</ThemedText>
+        <View style={styles.timelineBar} accessibilityElementsHidden>
+          <View style={[styles.timelineSegment, styles.segmentOk]} />
+          <View style={[styles.timelineSegment, styles.segmentWarn]} />
+          <View style={[styles.timelineSegment, styles.segmentAlert]} />
         </View>
-        <ThemedText variant="body" style={styles.sectionText}>
-          O &ldquo;Tudo bem?&rdquo; é um aplicativo simples de check-in a cada
-          48 horas que sinaliza que você está bem.
-        </ThemedText>
-        <ThemedText variant="body" style={styles.sectionText}>
-          Caso você não faça o check-in no período de 48 horas, seu contato de
-          emergência receberá automaticamente um e-mail informando que não
-          tivemos notícias suas.
-        </ThemedText>
-        <ThemedText variant="body" style={styles.sectionText}>
-          O e-mail incluirá seu nome e solicitará que a pessoa entre em contato
-          para verificar se está tudo bem.
-        </ThemedText>
+        <View style={styles.timeline}>
+          {TIMELINE.map(({ time, text, color }, index) => (
+            <View
+              key={time}
+              style={[
+                styles.timelineItem,
+                index === TIMELINE.length - 1 && styles.timelineItemLast,
+              ]}
+            >
+              <Text style={[styles.timelineTime, { color }]}>{time}</Text>
+              <ThemedText
+                variant="caption"
+                style={[
+                  styles.timelineText,
+                  index === TIMELINE.length - 1 && styles.textRight,
+                ]}
+              >
+                {text}
+              </ThemedText>
+            </View>
+          ))}
+        </View>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <MaterialIcons name="warning" size={24} color={Colors.button.bad} />
-          <ThemedText variant="strongBody" style={styles.sectionTitle}>
-            Importante antes de desinstalar
+      <View style={[styles.card, styles.warningCard]}>
+        <MaterialIcons name="warning-amber" size={24} color={Colors.danger} />
+        <View style={styles.flex}>
+          <Text style={styles.warningTitle}>Antes de desinstalar</Text>
+          <ThemedText variant="caption" style={styles.warningText}>
+            Pause o monitoramento ou exclua sua conta em Ajustes. Caso contrário,
+            seu contato continuará recebendo alertas mesmo após a
+            desinstalação.
           </ThemedText>
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => router.navigate("/(app)/settings")}
+            hitSlop={8}
+            style={styles.warningLink}
+          >
+            <Text style={styles.warningLinkText}>Ir para Ajustes</Text>
+          </Pressable>
         </View>
-        <ThemedText variant="body" style={styles.sectionText}>
-          Antes de desinstalar o aplicativo, desative ou exclua sua conta.
-        </ThemedText>
-        <ThemedText variant="body" style={styles.sectionText}>
-          Caso contrário, o sistema continuará enviando alertas automaticamente
-          para seu contato de emergência mesmo após a desinstalação.
-        </ThemedText>
       </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <MaterialIcons name="security" size={24} color={Colors.button.good} />
-          <ThemedText variant="strongBody" style={styles.sectionTitle}>
-            Privacidade e segurança
-          </ThemedText>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <MaterialIcons name="shield" size={22} color={Colors.primary} />
+          <ThemedText variant="heading">Privacidade</ThemedText>
         </View>
-        <ThemedText variant="body" style={styles.sectionText}>
-          • Suas informações são armazenadas de forma segura.{"\n"}• Apenas seu
-          contato de emergência será notificado.{"\n"}• Sem compartilhamento de
-          dados com terceiros.{"\n"}• Você pode desativar o sistema a qualquer
-          momento.
-        </ThemedText>
+        <View style={styles.grid}>
+          {PRIVACY.map((item) => (
+            <View key={item} style={styles.gridItem}>
+              <ThemedText variant="caption" style={styles.gridText}>
+                {item}
+              </ThemedText>
+            </View>
+          ))}
+        </View>
       </View>
 
       <View style={styles.footer}>
-        <ThemedText variant="secondaryBody" style={styles.footerText}>
-          &ldquo;Às vezes, tudo o que a gente precisa é avisar que está
-          bem.&rdquo;
+        <ThemedText variant="caption" style={styles.quote}>
+          “Às vezes, tudo o que a gente precisa é avisar que está bem.”
+        </ThemedText>
+        <ThemedText variant="label" style={styles.version}>
+          Versão {Constants.expoConfig?.version}
         </ThemedText>
       </View>
     </ThemeView>
@@ -75,37 +106,129 @@ export default function AboutScreen() {
 }
 
 const styles = StyleSheet.create({
-  section: {
-    marginBottom: 24,
-    backgroundColor: Colors.text.white,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  content: {
+    paddingHorizontal: 20,
+    gap: 14,
   },
-  sectionHeader: {
+  inset: {
+    marginHorizontal: 4,
+    marginBottom: 4,
+  },
+  flex: {
+    flex: 1,
+    gap: 6,
+  },
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: 20,
+    padding: 18,
+    gap: 14,
+  },
+  cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    gap: 10,
   },
-  sectionTitle: {
-    marginLeft: 12,
-    fontSize: 18,
+  timelineBar: {
+    flexDirection: "row",
+    height: 8,
+    borderRadius: 4,
+    overflow: "hidden",
   },
-  sectionText: {
-    lineHeight: 22,
-    marginBottom: 8,
+  timelineSegment: {
+    height: "100%",
+  },
+  segmentOk: {
+    flex: 50,
+    backgroundColor: Colors.primary,
+  },
+  segmentWarn: {
+    flex: 42,
+    backgroundColor: Colors.warning,
+  },
+  segmentAlert: {
+    flex: 8,
+    backgroundColor: Colors.danger,
+  },
+  timeline: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: -4,
+  },
+  timelineItem: {
+    flex: 1,
+    gap: 4,
+  },
+  timelineItemLast: {
+    alignItems: "flex-end",
+  },
+  timelineTime: {
+    fontFamily: Fonts.extrabold,
+    fontSize: 13,
+  },
+  timelineText: {
+    fontSize: 13,
+    lineHeight: 18,
+    color: Colors.text.secondary,
+  },
+  textRight: {
+    textAlign: "right",
+  },
+  warningCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    backgroundColor: Colors.dangerTint,
+  },
+  warningTitle: {
+    fontFamily: Fonts.extrabold,
+    fontSize: 16,
+    color: Colors.dangerDark,
+  },
+  warningText: {
+    color: Colors.dangerText,
+  },
+  warningLink: {
+    minHeight: 32,
+    justifyContent: "center",
+    alignSelf: "flex-start",
+  },
+  warningLinkText: {
+    fontFamily: Fonts.extrabold,
+    fontSize: 14,
+    color: Colors.dangerDark,
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  gridItem: {
+    flexBasis: "47%",
+    flexGrow: 1,
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  gridText: {
+    fontSize: 13,
+    lineHeight: 18,
+    color: Colors.text.secondary,
   },
   footer: {
+    marginTop: "auto",
+    paddingTop: 16,
     alignItems: "center",
-    marginTop: 16,
-    marginBottom: 32,
+    gap: 4,
   },
-  footerText: {
+  quote: {
     textAlign: "center",
     fontStyle: "italic",
+    color: Colors.text.secondary,
+  },
+  version: {
+    fontSize: 12,
+    color: Colors.text.subtle,
   },
 });

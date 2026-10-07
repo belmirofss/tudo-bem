@@ -1,125 +1,122 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import {
+  ActivityIndicator,
+  Pressable,
+  PressableProps,
   StyleProp,
   StyleSheet,
   Text,
-  TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
+  View,
   ViewStyle,
 } from "react-native";
-import { Colors } from "../constants";
+import { Colors, Fonts } from "../constants";
 
-type ButtonVariant = "good" | "bad" | "neutral" | "link";
-type ButtonSize = "normal" | "large";
+type ButtonVariant = "primary" | "danger" | "dangerOutline" | "ghost";
 
-type Props = TouchableOpacityProps & {
+type Props = Omit<PressableProps, "style"> & {
   title: string;
-  variant: ButtonVariant;
-  size?: ButtonSize;
+  variant?: ButtonVariant;
+  icon?: keyof typeof MaterialIcons.glyphMap;
+  loading?: boolean;
+  style?: StyleProp<ViewStyle>;
+};
+
+const palette: Record<
+  ButtonVariant,
+  { background: string; pressed: string; text: string; border?: string }
+> = {
+  primary: {
+    background: Colors.primary,
+    pressed: Colors.primaryDark,
+    text: Colors.text.inverse,
+  },
+  danger: {
+    background: Colors.danger,
+    pressed: Colors.dangerDark,
+    text: Colors.text.inverse,
+  },
+  dangerOutline: {
+    background: "transparent",
+    pressed: Colors.dangerTint,
+    text: Colors.danger,
+    border: Colors.danger,
+  },
+  ghost: {
+    background: "transparent",
+    pressed: Colors.divider,
+    text: Colors.text.secondary,
+  },
 };
 
 export const ThemedButton = ({
   title,
-  variant,
-  size = "normal",
+  variant = "primary",
+  icon,
+  loading = false,
+  disabled,
   style,
   ...props
 }: Props) => {
-  const getButtonStyle = () => {
-    const buttonStyle: StyleProp<ViewStyle> = [styles.button];
-
-    if (size === "large") {
-      buttonStyle.push(styles.largeButton);
-    }
-
-    if (variant === "good") {
-      buttonStyle.push(styles.goodButton);
-    }
-
-    if (variant === "bad") {
-      buttonStyle.push(styles.badButton);
-    }
-
-    if (variant === "neutral") {
-      buttonStyle.push(styles.neutralButton);
-    }
-
-    if (variant === "link") {
-      buttonStyle.push(styles.linkButton);
-    }
-
-    if (props.disabled) {
-      buttonStyle.push(styles.disabledButton);
-    }
-
-    return buttonStyle;
-  };
-
-  const getTextStyle = () => {
-    const textStyle: StyleProp<TextStyle> = [styles.buttonText];
-
-    if (props.disabled) {
-      textStyle.push(styles.disabledButtonText);
-    }
-
-    if (variant === "link") {
-      textStyle.push(styles.linkButtonText);
-    }
-
-    return textStyle;
-  };
+  const colors = palette[variant];
+  const isDisabled = disabled || loading;
+  const isFilled = variant === "primary" || variant === "danger";
 
   return (
-    <TouchableOpacity style={[getButtonStyle(), style]} {...props}>
-      <Text style={getTextStyle()}>{title}</Text>
-    </TouchableOpacity>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      disabled={isDisabled}
+      style={({ pressed }) => [
+        styles.button,
+        variant === "ghost" && styles.ghost,
+        {
+          backgroundColor: pressed ? colors.pressed : colors.background,
+          borderColor: colors.border ?? "transparent",
+        },
+        isDisabled && isFilled && styles.disabledFilled,
+        isDisabled && !isFilled && styles.disabledOutline,
+        style,
+      ]}
+      {...props}
+    >
+      {loading ? (
+        <ActivityIndicator color={colors.text} />
+      ) : (
+        <View style={styles.content}>
+          {icon && <MaterialIcons name={icon} size={20} color={colors.text} />}
+          <Text style={[styles.text, { color: colors.text }]}>{title}</Text>
+        </View>
+      )}
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    padding: 16,
-    paddingVertical: 24,
-    borderRadius: 16,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 4,
+    minHeight: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
     width: "100%",
   },
-  goodButton: {
-    backgroundColor: Colors.button.good,
+  ghost: {
+    minHeight: 48,
   },
-  badButton: {
-    backgroundColor: Colors.button.bad,
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
-  neutralButton: {
-    backgroundColor: Colors.button.neutral,
+  text: {
+    fontFamily: Fonts.bold,
+    fontSize: 18,
   },
-  linkButton: {
-    backgroundColor: "transparent",
-    shadowOpacity: 0,
-    elevation: 0,
+  disabledFilled: {
+    backgroundColor: Colors.disabled,
   },
-  largeButton: {
-    paddingVertical: 48,
-  },
-  disabledButton: {
-    backgroundColor: Colors.button.disabled,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  buttonText: {
-    color: Colors.text.white,
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  disabledButtonText: {
-    color: Colors.text.disabled,
-  },
-  linkButtonText: {
-    color: Colors.text.secondary,
+  disabledOutline: {
+    opacity: 0.5,
   },
 });

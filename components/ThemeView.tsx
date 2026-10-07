@@ -1,14 +1,20 @@
-import { Dimensions, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "../constants";
 
 type Props = {
   children: React.ReactNode;
+  contentStyle?: StyleProp<ViewStyle>;
+  // Screens rendered inside the tab bar already get bottom spacing from it
+  withBottomInset?: boolean;
 };
 
-export const ThemeView = ({ children }: Props) => {
+export const ThemeView = ({
+  children,
+  contentStyle,
+  withBottomInset = true,
+}: Props) => {
   const insets = useSafeAreaInsets();
-  const screenHeight = Dimensions.get("window").height;
 
   return (
     <ScrollView
@@ -16,10 +22,12 @@ export const ThemeView = ({ children }: Props) => {
       contentContainerStyle={[
         styles.container,
         {
-          minHeight: screenHeight - insets.top - insets.bottom,
-          paddingBottom: insets.bottom,
+          paddingTop: insets.top + 24,
+          paddingBottom: (withBottomInset ? insets.bottom : 0) + 24,
         },
+        contentStyle,
       ]}
+      keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
       {children}
@@ -30,11 +38,10 @@ export const ThemeView = ({ children }: Props) => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   container: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 20,
-    backgroundColor: Colors.background,
   },
 });

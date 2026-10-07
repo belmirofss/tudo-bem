@@ -1,9 +1,7 @@
-import { ThemedButton } from "@/components/ThemedButton";
-import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { InfoBox } from "../../components/InfoBox";
+import { OnboardingStep } from "../../components/OnboardingStep";
 import { ThemedTextInput } from "../../components/ThemedTextInput";
-import { ThemeView } from "../../components/ThemeView";
 import { useOnboarding } from "./context/OnboardingContext";
 
 export default function InputYourEmergencyContactName() {
@@ -11,52 +9,33 @@ export default function InputYourEmergencyContactName() {
   const { updateEmergencyContactName, data, isValidEmergencyContactName } =
     useOnboarding();
 
-  return (
-    <ThemeView>
-      <View style={styles.container}>
-        <View style={styles.contentContainer}>
-          <ThemedText variant="title">
-            Qual o nome do seu contato de emergência?
-          </ThemedText>
-          <ThemedTextInput
-            value={data.emergencyContactName}
-            onChangeText={updateEmergencyContactName}
-            placeholder="Digite o nome do contato"
-          />
-        </View>
+  const handleContinue = () =>
+    router.push("/onboarding/input-your-emergency-contact-email");
 
-        <View style={styles.buttonsContainer}>
-          <ThemedButton
-            title="Continuar"
-            variant="neutral"
-            disabled={!isValidEmergencyContactName}
-            onPress={() =>
-              router.push("/onboarding/input-your-emergency-contact-email")
-            }
-          />
-          <ThemedButton
-            title="Voltar"
-            variant="link"
-            onPress={() => router.back()}
-          />
-        </View>
-      </View>
-    </ThemeView>
+  return (
+    <OnboardingStep
+      step={2}
+      overline="Contato de emergência"
+      title="Quem devemos avisar se você não responder?"
+      canContinue={isValidEmergencyContactName}
+      onContinue={handleContinue}
+    >
+      <ThemedTextInput
+        label="Nome do contato"
+        size="large"
+        value={data.emergencyContactName}
+        onChangeText={updateEmergencyContactName}
+        placeholder="Digite o nome do contato"
+        autoCapitalize="words"
+        autoFocus
+        isValid={isValidEmergencyContactName}
+        returnKeyType="next"
+        onSubmitEditing={() => isValidEmergencyContactName && handleContinue()}
+      />
+      <InfoBox icon="shield">
+        Essa pessoa só recebe um e-mail se você ficar 48 horas sem responder ou
+        tocar em “Não estou bem”.
+      </InfoBox>
+    </OnboardingStep>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-  },
-  contentContainer: {
-    gap: 24,
-    width: "100%",
-  },
-  buttonsContainer: {
-    gap: 8,
-    width: "100%",
-  },
-});

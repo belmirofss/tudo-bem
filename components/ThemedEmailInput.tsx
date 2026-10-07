@@ -1,47 +1,14 @@
-import {
-  StyleProp,
-  StyleSheet,
-  TextInput,
-  TextInputProps,
-  ViewStyle,
-} from "react-native";
-import { Colors } from "../constants";
+import { ThemedTextInput, ThemedTextInputProps } from "./ThemedTextInput";
 
-type Props = TextInputProps & {
-  style?: StyleProp<ViewStyle>;
-  onChangeText?: (email: string) => void;
-  value?: string;
-};
-
-export const ThemedEmailInput = ({
-  style,
-  onChangeText,
-  value = "",
-  ...props
-}: Props) => {
+export const ThemedEmailInput = (props: ThemedTextInputProps) => {
   return (
-    <TextInput
-      style={[styles.input, style]}
-      placeholderTextColor={Colors.text.secondary}
-      value={value}
-      onChangeText={onChangeText}
+    <ThemedTextInput
       keyboardType="email-address"
       autoCapitalize="none"
       autoComplete="email"
+      autoCorrect={false}
       placeholder="email@exemplo.com"
       {...props}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.text.secondary,
-    borderRadius: 16,
-    padding: 18,
-    fontSize: 18,
-    backgroundColor: Colors.text.white,
-    color: Colors.text.primary,
-  },
-});

@@ -1,20 +1,16 @@
 import { Stack } from "expo-router";
+import { Colors } from "../../../constants";
 
 export default function SettingsLayout() {
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Configurações",
-        }}
-      />
-      <Stack.Screen
-        name="update-profile"
-        options={{
-          title: "Atualizar dados",
-        }}
-      />
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: Colors.background },
+      }}
+    >
+      <Stack.Screen name="index" />
+      <Stack.Screen name="update-profile" />
     </Stack>
   );
 }

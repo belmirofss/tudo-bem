@@ -1,59 +1,49 @@
-import { ConfirmationModal } from "@/components/ConfirmationModal";
-import { ErrorState } from "@/components/ErrorState";
-import { LoadingState } from "@/components/LoadingState";
-import { ThemedButton } from "@/components/ThemedButton";
-import { ThemedText } from "@/components/ThemedText";
+import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { ConfirmationModal } from "../../../components/ConfirmationModal";
+import { ErrorState } from "../../../components/ErrorState";
+import { LoadingState } from "../../../components/LoadingState";
+import { ThemedText } from "../../../components/ThemedText";
 import { ThemeView } from "../../../components/ThemeView";
-import { Colors, DEVICE_ID_KEY } from "../../../constants";
-
+import { Colors, DEVICE_ID_KEY, Fonts } from "../../../constants";
 import { useDeleteAccount } from "../../../hooks/useDeleteAccount";
 import { useMe } from "../../../hooks/useMe";
 import { useToggleDevice } from "../../../hooks/useToggleDevice";
 
+const goToEditProfile = () => router.push("/(app)/settings/update-profile");
+
 export default function SettingsScreen() {
-  const { data, isLoading, error } = useMe();
+  const { data, isLoading, error, refetch } = useMe();
   const deleteAccountMutation = useDeleteAccount();
   const toggleDeviceMutation = useToggleDevice();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showToggleModal, setShowToggleModal] = useState(false);
 
   const handleToggleDevice = async () => {
+    setShowToggleModal(false);
     try {
       const newDisabledState = await toggleDeviceMutation.mutateAsync();
 
       Toast.show({
         type: "success",
         text1: newDisabledState
-          ? "Dispositivo desativado"
-          : "Dispositivo ativado",
+          ? "Monitoramento pausado"
+          : "Monitoramento ativado",
       });
     } catch {
       Toast.show({
         type: "error",
-        text1: "Erro ao alterar estado do dispositivo!",
+        text1: "Erro ao alterar o monitoramento!",
       });
     }
   };
 
-  const handleTogglePress = () => {
-    setShowToggleModal(true);
-  };
-
-  const handleToggleConfirm = () => {
-    setShowToggleModal(false);
-    handleToggleDevice();
-  };
-
-  const handleToggleCancel = () => {
-    setShowToggleModal(false);
-  };
-
   const handleDeleteAccount = async () => {
+    setShowDeleteModal(false);
     try {
       await deleteAccountMutation.mutateAsync();
 
@@ -75,139 +65,235 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleDeletePress = () => {
-    setShowDeleteModal(true);
-  };
-
-  const handleDeleteConfirm = () => {
-    setShowDeleteModal(false);
-    handleDeleteAccount();
-  };
-
-  const handleDeleteCancel = () => {
-    setShowDeleteModal(false);
-  };
-
   if (isLoading) {
     return <LoadingState />;
   }
 
   if (error || !data) {
-    return <ErrorState />;
+    return <ErrorState onRetry={() => refetch()} />;
   }
 
-  return (
-    <ThemeView>
-      <View style={styles.section}>
-        <ThemedText variant="strongBody" style={styles.sectionTitle}>
-          Informações da Conta
-        </ThemedText>
+  const isActive = !data.disabled;
 
-        <View style={styles.infoContainer}>
-          {[
-            ["Nome", data.name],
-            ["Contato de Emergência", data.emergencyContactName],
-            ["E-mail do Contato de Emergência", data.emergencyContactEmail],
-          ].map(([title, value]) => (
-            <View key={title} style={styles.infoItem}>
-              <ThemedText variant="body">{title}</ThemedText>
-              <ThemedText variant="strongBody">{value}</ThemedText>
-            </View>
-          ))}
-          <View style={styles.infoItem}>
-            <ThemedText variant="body">Status do Dispositivo</ThemedText>
-            <ThemedText
-              variant="strongBody"
-              style={
-                data?.disabled ? styles.disabledStatus : styles.enabledStatus
-              }
-            >
-              {data?.disabled ? "Desativado" : "Ativado"}
+  return (
+    <ThemeView withBottomInset={false} contentStyle={styles.content}>
+      <ThemedText variant="title" accessibilityRole="header" style={styles.inset}>
+        Ajustes
+      </ThemedText>
+
+      <View style={[styles.card, styles.profile]}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>
+            {data.name.trim().charAt(0).toUpperCase()}
+          </Text>
+        </View>
+        <View style={styles.flex}>
+          <ThemedText variant="heading">{data.name}</ThemedText>
+          <ThemedText variant="caption">Check-in a cada 48 horas</ThemedText>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Editar dados"
+          onPress={goToEditProfile}
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && styles.iconButtonPressed,
+          ]}
+        >
+          <MaterialIcons name="edit" size={20} color={Colors.text.primary} />
+        </Pressable>
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText variant="overline" style={[styles.sectionTitle, styles.inset]}>
+          Contato de emergência
+        </ThemedText>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Contato de emergência: ${data.emergencyContactName}, ${data.emergencyContactEmail}. Editar`}
+          onPress={goToEditProfile}
+          style={({ pressed }) => [
+            styles.card,
+            styles.row,
+            pressed && styles.rowPressed,
+          ]}
+        >
+          <View style={styles.rowIcon}>
+            <MaterialIcons name="person-outline" size={22} color={Colors.primary} />
+          </View>
+          <View style={styles.flex}>
+            <ThemedText variant="bodyStrong">{data.emergencyContactName}</ThemedText>
+            <ThemedText variant="caption" numberOfLines={1}>
+              {data.emergencyContactEmail}
             </ThemedText>
+          </View>
+          <MaterialIcons name="chevron-right" size={24} color={Colors.text.subtle} />
+        </Pressable>
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText variant="overline" style={[styles.sectionTitle, styles.inset]}>
+          Proteção
+        </ThemedText>
+        <View style={styles.card}>
+          <View style={[styles.row, styles.rowDivider]}>
+            <View style={styles.flex}>
+              <ThemedText variant="bodyStrong">Monitoramento ativo</ThemedText>
+              <ThemedText variant="caption">
+                {isActive
+                  ? `${data.emergencyContactName} será avisado(a) se você ficar 48h sem responder.`
+                  : "Pausado: sem lembretes e sem alertas ao seu contato."}
+              </ThemedText>
+            </View>
+            <Switch
+              accessibilityLabel="Monitoramento ativo"
+              value={isActive}
+              onValueChange={() => setShowToggleModal(true)}
+              disabled={toggleDeviceMutation.isPending}
+              trackColor={{ false: Colors.disabled, true: Colors.primary }}
+              thumbColor={Colors.surface}
+              ios_backgroundColor={Colors.disabled}
+            />
+          </View>
+          <View style={styles.row}>
+            <View style={styles.flex}>
+              <ThemedText variant="bodyStrong">Lembretes</ThemedText>
+              <ThemedText variant="caption">
+                24h · 12h · 4h · 2h · 1h · 30min · 10min antes do prazo
+              </ThemedText>
+            </View>
           </View>
         </View>
       </View>
 
       <View style={styles.section}>
-        <ThemedText variant="strongBody" style={styles.sectionTitle}>
-          Ações
+        <ThemedText variant="overline" style={[styles.sectionTitle, styles.inset]}>
+          Conta
         </ThemedText>
-        <ThemedButton
-          title="Atualizar dados"
-          variant="neutral"
-          onPress={() => router.push("/(app)/settings/update-profile")}
-          style={styles.buttonSpacing}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setShowDeleteModal(true)}
           disabled={deleteAccountMutation.isPending}
-        />
-        <ThemedButton
-          title={
-            data?.disabled ? "Ativar dispositivo" : "Desativar dispositivo"
-          }
-          variant={data?.disabled ? "good" : "bad"}
-          onPress={handleTogglePress}
-          style={styles.buttonSpacing}
-          disabled={toggleDeviceMutation.isPending}
-        />
-        <ThemedButton
-          title="Excluir conta"
-          variant="bad"
-          onPress={handleDeletePress}
-          disabled={deleteAccountMutation.isPending}
-        />
+          style={({ pressed }) => [
+            styles.card,
+            styles.row,
+            styles.deleteRow,
+            pressed && styles.rowPressed,
+          ]}
+        >
+          <MaterialIcons name="delete-outline" size={22} color={Colors.danger} />
+          <Text style={styles.deleteText}>Excluir conta</Text>
+        </Pressable>
       </View>
 
       <ConfirmationModal
         visible={showDeleteModal}
         title="Excluir conta?"
-        message="Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão permanentemente removidos."
+        message="Esta ação não pode ser desfeita. Todos os seus dados serão removidos e seu contato não receberá mais alertas."
         confirmText="Sim, excluir"
-        cancelText="Cancelar"
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
+        icon="delete-outline"
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowDeleteModal(false)}
       />
       <ConfirmationModal
         visible={showToggleModal}
-        title={
-          data?.disabled ? "Ativar dispositivo?" : "Desativar dispositivo?"
-        }
+        title={isActive ? "Pausar monitoramento?" : "Ativar monitoramento?"}
         message={
-          data?.disabled
-            ? "Tem certeza que deseja ativar seu dispositivo? Você passará a receber lembretes e seu contato de emergência será notificado se necessário."
-            : "Tem certeza que deseja desativar seu dispositivo? Seu contato de emergência não será notificado e você não receberá lembretes."
+          isActive
+            ? "Você não receberá lembretes e seu contato de emergência não será notificado enquanto estiver pausado."
+            : "Você passará a receber lembretes e seu contato de emergência será notificado se necessário."
         }
-        confirmText={data?.disabled ? "Sim, ativar" : "Sim, desativar"}
-        cancelText="Cancelar"
-        onConfirm={handleToggleConfirm}
-        onCancel={handleToggleCancel}
+        confirmText={isActive ? "Sim, pausar" : "Sim, ativar"}
+        tone={isActive ? "danger" : "primary"}
+        icon={isActive ? "pause-circle-outline" : "play-circle-outline"}
+        onConfirm={handleToggleDevice}
+        onCancel={() => setShowToggleModal(false)}
       />
     </ThemeView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
+    paddingHorizontal: 20,
+    gap: 20,
+  },
+  inset: {
+    marginHorizontal: 4,
+  },
+  flex: {
     flex: 1,
+    gap: 2,
+  },
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: 20,
+  },
+  profile: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 16,
+  },
+  avatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: Colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    fontFamily: Fonts.extrabold,
+    fontSize: 22,
+    color: Colors.text.inverse,
+  },
+  iconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.background,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconButtonPressed: {
+    backgroundColor: Colors.divider,
   },
   section: {
-    marginBottom: 24,
+    gap: 8,
   },
   sectionTitle: {
-    marginBottom: 12,
+    color: Colors.text.muted,
   },
-  infoContainer: {
-    marginTop: 16,
-    gap: 16,
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    minHeight: 56,
   },
-  infoItem: {
-    gap: 4,
+  rowDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.divider,
   },
-  buttonSpacing: {
-    marginBottom: 12,
+  rowPressed: {
+    backgroundColor: Colors.surfaceMuted,
   },
-  enabledStatus: {
-    color: Colors.button.good,
+  rowIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.primaryTint,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  disabledStatus: {
-    color: Colors.button.bad,
+  deleteRow: {
+    gap: 12,
+  },
+  deleteText: {
+    fontFamily: Fonts.bold,
+    fontSize: 16,
+    color: Colors.danger,
   },
 });
