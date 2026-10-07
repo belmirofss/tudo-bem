@@ -308,7 +308,11 @@ export const iAmNotWellAndSendEmail = functions.https.onRequest(
         await sendEmail(
           data.emergencyContactEmail,
           `Alerta de emergência - ${data.name}`,
-          createManualAlertEmailContent(data.name),
+          createManualAlertEmailContent({
+            userName: data.name,
+            contactName: data.emergencyContactName,
+            sentAt: new Date(),
+          }),
         );
 
         await installationRef.update({
@@ -359,7 +363,11 @@ export const checkInactiveUsers = functions.scheduler.onSchedule(
         await sendEmail(
           data.emergencyContactEmail,
           `Alerta de segurança - ${data.name}`,
-          createEmergency48HoursAlertEmailContent(data.name),
+          createEmergency48HoursAlertEmailContent({
+            userName: data.name,
+            contactName: data.emergencyContactName,
+            lastCheckinAt: data.lastCheckinAt.toDate(),
+          }),
         );
 
         if (data.fcmToken) {
