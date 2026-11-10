@@ -28,17 +28,17 @@ export const ThemedTextInput = ({
       <ThemedText variant="label" style={styles.label}>
         {label}
       </ThemedText>
-      <View>
+      <View
+        style={[
+          styles.field,
+          size === "large" && styles.fieldLarge,
+          focused && styles.fieldFocused,
+        ]}
+      >
         <TextInput
           accessibilityLabel={label}
           placeholderTextColor={Colors.text.subtle}
-          style={[
-            styles.input,
-            size === "large" && styles.inputLarge,
-            focused && styles.inputFocused,
-            isValid && styles.inputWithIcon,
-            style,
-          ]}
+          style={[styles.input, size === "large" && styles.inputLarge, style]}
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
@@ -50,9 +50,12 @@ export const ThemedTextInput = ({
           {...props}
         />
         {isValid && (
-          <View style={styles.icon}>
-            <MaterialIcons name="check" size={22} color={Colors.primary} />
-          </View>
+          <MaterialIcons
+            name="check"
+            size={22}
+            color={Colors.primary}
+            style={styles.icon}
+          />
         )}
       </View>
       {helper && <ThemedText variant="caption">{helper}</ThemedText>}
@@ -68,34 +71,38 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.text.secondary,
   },
-  input: {
+  // The border, background and padding live on a wrapper View because
+  // Android doesn't reliably apply horizontal padding to a styled TextInput.
+  field: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
     minHeight: 56,
     borderRadius: 16,
     borderWidth: 2,
     borderColor: Colors.track,
     backgroundColor: Colors.surface,
     paddingHorizontal: 16,
+  },
+  fieldLarge: {
+    minHeight: 60,
+  },
+  fieldFocused: {
+    borderColor: Colors.primary,
+    boxShadow: `0 0 0 4px ${Colors.primaryRing}`,
+  },
+  input: {
+    flex: 1,
+    alignSelf: "stretch",
+    padding: 0,
     fontFamily: Fonts.semibold,
     fontSize: 17,
     color: Colors.text.primary,
   },
   inputLarge: {
-    minHeight: 60,
     fontSize: 19,
-  },
-  inputFocused: {
-    borderColor: Colors.primary,
-    boxShadow: `0 0 0 4px ${Colors.primaryRing}`,
-  },
-  inputWithIcon: {
-    paddingRight: 48,
   },
   icon: {
     pointerEvents: "none",
-    position: "absolute",
-    right: 16,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
   },
 });
